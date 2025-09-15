@@ -16,7 +16,7 @@ int main() {
 	SetConsoleOutputCP(1251);
 	hideCursor();
 
-	const std::string main_Menu[]{ "1 - Использование потоков ввода/вывода данных", "2 - .......", "Выход" };
+	const std::string main_Menu[]{ "1 - Использование потоков ввода/вывода данных", "2 - Использование потоков файлового ввода/вывода данных", "Выход" };
 	const int main_Menu_Count = sizeof(main_Menu) / sizeof(main_Menu[0]);
 
 	bool inMainMenu = true;
@@ -115,12 +115,12 @@ int main() {
 			break;
 		}
 		case LAB_2 : {
-			const std::string secondary_Menu[]{ "Получить информацию о задании","Создать заказ на букет","Назад","Выход" };
+			const std::string secondary_Menu[]{ "Получить информацию о задании","Запустить программу по работе с файлами","Назад","Выход" };
 			const int secondary_Menu_Count = sizeof(secondary_Menu) / sizeof(secondary_Menu[0]);
 
 			bool inSecondaryMenu = true;
 			while (inSecondaryMenu) {
-				int secondary_Menu_choice = main_showMenu("1 - Использование потоков ввода/вывода данных", secondary_Menu, secondary_Menu_Count, false);
+				int secondary_Menu_choice = main_showMenu("2 - Использование потоков файлового ввода/вывода данных", secondary_Menu, secondary_Menu_Count, false);
 
 				switch (secondary_Menu_choice) {
 				case SHOW_LAB_INFO: {
@@ -131,7 +131,61 @@ int main() {
 				case LAB_IMPLEMENTATION: {
 					showCursor();
 
-				
+					int bouquetsize;
+					int idSearch;
+					std::vector<Customer> cstmr;
+					std::vector<Wrapper> wrppr;
+					std::vector<Bouquet> bqt;
+
+					Customer::addCustomer(cstmr);
+
+					std::cout << "\nСколько букетов вам нужно? ";
+					while (true) {
+						std::cin >> bouquetsize;
+						if (!std::cin.bad() && bouquetsize > 0) {
+							break;
+						}
+						std::cin.clear();
+						std::cout << "Неправильный ввод данных\n";
+						std::cin.ignore(10, '\n');
+					}
+
+					for (int i = 0; i < bouquetsize; i++) {
+						Bouquet bouquet;
+						Wrapper wrapper;
+
+						bouquet.addPr();
+						wrapper.addPr();
+
+						bqt.push_back(bouquet);
+						wrppr.push_back(wrapper);
+					}
+
+					for (int i = 0; i < bqt.size(); i++) {
+						bqt[i].showPr();
+						if (i < wrppr.size()) {
+							wrppr[i].showPr();
+						}
+					}
+					Customer::showCustomer(cstmr);
+
+					do {
+						std::cout << "\nПоиск по id букета (введи 0 чтобы выйти): ";
+						while (true) {
+							std::cin >> idSearch;
+							if (std::cin.good() && !std::cin.eof()) {
+								break;
+							}
+							std::cin.clear();
+							std::cout << "Неправильный ввод данных\n";
+							std::cin.ignore(10, '\n');
+						}
+						for (int i = 0; i < bqt.size(); i++) {
+							if (idSearch == bqt[i].GetBouquetId()) {
+								bqt[i].showPr();
+							}
+						}
+					} while (idSearch != 0);
 
 					hideCursor();
 					system("pause");

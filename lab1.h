@@ -2,9 +2,21 @@
 #include<iostream>
 #include<string>
 #include<vector>
+#include<fstream>
 #include "cursor_menu.h"
 #include "cursor_visibility.h"
 #include"input_check.h"
+
+std::string createFileName(const std::string& fileName) {
+    return fileName + ".txt";
+}
+
+void fileOpen(std::ofstream& os) {
+    os.open("MyFile.txt", std::ofstream::app);
+}
+void fileClose(std::ofstream& os) {
+    os.close();
+}
 
 enum Flowers {
     rose, tulip, sunflower, lily, carnation, hyacint
@@ -15,6 +27,7 @@ public:
     virtual void addPr() = 0;
     virtual void deletePr() = 0;
     virtual void showPr() = 0;
+    virtual void addToFile() = 0;
     virtual ~Product() {}
 };
 
@@ -42,6 +55,7 @@ public:
     void addPr() override;
     void deletePr() override;
     void showPr() override;
+    void addToFile() override;
 };
 
 class Wrapper : public Product {
@@ -67,7 +81,8 @@ public:
 
     void addPr() override;
     void deletePr() override;
-    void showPr();
+    void showPr() override;
+    void addToFile() override;
 };
 
 class Customer {
@@ -96,6 +111,8 @@ public:
     static void addCustomer(std::vector<Customer>& obj);
     static void deleteCustomer(std::vector<Customer>& obj);
     static void showCustomer(std::vector<Customer>& obj);
+
+    static void addCustomerInfoToFile(std::vector<Customer>& obj);
 };
 
 int Bouquet::bouquetCount = 0;
@@ -178,8 +195,8 @@ void Bouquet::deletePr() {
 }
 
 void Bouquet::showPr() {
-    std::cout << "\n========================\n";
-    std::cout << "\n=== БУКЕТ #" << bouquetId << " ===" << std::endl;
+    std::cout << "\n==========================\n";
+    std::cout << "\n===! БУКЕТ #" << bouquetId << " !===" << std::endl;
     std::cout << "Цветов: " << flowersAmount << std::endl;
     std::cout << "Стоимость: " << cost << " руб." << std::endl;
 
@@ -193,6 +210,35 @@ void Bouquet::showPr() {
         }
     }
     std::cout << std::endl;
+    Bouquet::addToFile();
+}
+
+void Bouquet::addToFile() {
+    std::ofstream os;
+    os.open("myFile.txt", std::ofstream::app);
+
+    if (!os.is_open()) {
+        std::cout << "Файл не удалось открыть";
+    }
+    else {
+        os << "\n==========================";
+        os << "\n===! Bouquet #" << bouquetId << " !===" << std::endl;
+        os << "Flowers amount: " << flowersAmount << std::endl;
+        os << "Price: " << cost << " rub." << std::endl;
+
+        std::string flowerNames_[] = { "Rose", "tulip", "sunflower", "lily", "carnation", "hyacint" };
+
+        os << "compound: ";
+        for (int i = 0; i < flowers.size(); i++) {
+            os << flowerNames_[flowers[i]];
+            if (i < flowers.size() - 1) {
+                os << ", ";
+            }
+        }
+        os << std::endl;
+    }
+
+    os.close();
 }
 
 int Wrapper::wrapperCount = 0;
@@ -244,10 +290,23 @@ void Wrapper::deletePr() {
 
 void Wrapper::showPr() {
     if (wrapperSelect) {
-        std::cout << "\n=== ОБЕРТКА ===" << std::endl;
+        std::cout << "\n===! ОБЕРТКА !===" << std::endl;
         std::cout << "Цветная: " << (colored ? "Да" : "Нет") << std::endl;
         std::cout << "С рисунком: " << (drawing ? "Да" : "Нет") << std::endl;
+
+        Wrapper::addToFile();
     }
+}
+
+void Wrapper::addToFile() {
+    std::ofstream os;
+    os.open("myFile.txt", std::ofstream::app);
+
+    os << "\n===! WRAPPER !===" << std::endl;
+    os << "Colored: " << (colored ? "Yes" : "No") << std::endl;
+    os << "Drawing: " << (drawing ? "Yes" : "No") << std::endl;
+
+    os.close();
 }
 
 int Customer::count = 0;
@@ -268,6 +327,7 @@ void Customer::addCustomer(std::vector<Customer>& obj) {
     letter_filteredInput<std::string>(email, 1, 0, 1);
 
     obj.push_back(Customer(name, city, email));
+    addCustomerInfoToFile(obj);
 }
 
 void Customer::deleteCustomer(std::vector<Customer>& obj) {
@@ -286,4 +346,24 @@ void Customer::showCustomer(std::vector<Customer>& obj) {
         std::cout << "Email: " << obj[i].email << std::endl;
         std::cout << "ID: " << obj[i].id << std::endl;
     }
+}
+
+void Customer::addCustomerInfoToFile(std::vector<Customer>& obj) {
+    std::ofstream os;
+    os.open("MyFile.txt", std::ofstream::app);
+
+    if (!os.is_open()) {
+        std::cout << "Файл не удалось открыть";
+    }
+    else {
+        os << "\n===! CUSTOMER DATA !===" << std::endl;
+        for (int i = 0; i < obj.size(); i++) {
+            os << "Name: " << obj[i].GetName() << std::endl;
+            os << "City: " << obj[i].GetCity() << std::endl;
+            os << "Email: " << obj[i].GetEmail() << std::endl;
+            os << "ID: " << obj[i].GetId() << std::endl;
+        }
+    }
+
+    os.close();
 }
