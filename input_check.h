@@ -141,7 +141,7 @@ void letter_filteredInput(std::string& buf, bool check_english = false, bool che
 				isValid = check_englishLetters_specSymbols_input(std::string(1, char(c)));
 			}
 
-			if (isValid && buf.size() < MAX_DIGITS) {
+			if (isValid && buf.size() < 30) {
 				buf += char(c);
 				if (mask_input) {
 					std::cout << '*';

@@ -89,7 +89,7 @@ bool check_double_float_input(const std::string& buf) {
 bool check_englishLetters_specSymbols_input(const std::string& s) {
 	if (s.empty()) return false;
 	char c = s[0];
-	return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || (c == '-') || (c == '_') || (c == '.');
+	return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || (c == '@') || (c == '_') || (c == '.');
 }
 bool check_russian_englishLetters_input(const std::string& s) {
 	if (s.empty()) return false;
@@ -101,7 +101,6 @@ bool check_englishLetters_input(const std::string& s) {
 	char c = s[0];
 	return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
 }
-
 
 //==============DEBUG==============
 /*

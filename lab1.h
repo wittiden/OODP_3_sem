@@ -3,20 +3,12 @@
 #include<string>
 #include<vector>
 #include<fstream>
+
 #include "cursor_menu.h"
 #include "cursor_visibility.h"
 #include"input_check.h"
 
-std::string createFileName(const std::string& fileName) {
-    return fileName + ".txt";
-}
-
-void fileOpen(std::ofstream& os) {
-    os.open("MyFile.txt", std::ofstream::app);
-}
-void fileClose(std::ofstream& os) {
-    os.close();
-}
+const std::string fileName = "myFile.txt";
 
 enum Flowers {
     rose, tulip, sunflower, lily, carnation, hyacint
@@ -37,6 +29,7 @@ class Bouquet : public Product {
     std::vector<Flowers> flowers;
     int bouquetId;
     static int bouquetCount;
+    static bool wrapperSelect;
 public:
     Bouquet() { cost = 0.0f; flowersAmount = 0; bouquetCount++; bouquetId = bouquetCount; }
     Bouquet(float cost) :Bouquet() { this->cost = cost; }
@@ -56,26 +49,23 @@ public:
     void deletePr() override;
     void showPr() override;
     void addToFile() override;
+    void showFileInfo();
 };
 
 class Wrapper : public Product {
     bool colored;
     bool  drawing;
-    bool wrapperSelect;
     std::vector<Wrapper> allWrappers;
-    int wrapperId;
-    static int wrapperCount;
 public:
-    Wrapper() { colored = 0; drawing = 0; wrapperSelect = 0; wrapperCount++; wrapperId = wrapperCount; }
+    Wrapper() { colored = 0; drawing = 0; }
     Wrapper(bool colored) :Wrapper() { this->colored = colored; }
     Wrapper(bool drawing, bool colored) :Wrapper(colored) { this->drawing = drawing; }
 
-    Wrapper(const Wrapper& other) :colored(other.colored), drawing(other.drawing), wrapperSelect(other.wrapperSelect), allWrappers(other.allWrappers), wrapperId(other.wrapperId) {}
+    Wrapper(const Wrapper& other) :colored(other.colored), drawing(other.drawing) {}
     ~Wrapper() override { allWrappers.clear(); }
 
     bool GetColored() const { return colored; }
     bool GetDrawing() const { return drawing; }
-    int GetWrapperId() const { return wrapperId; }
     void SetColored(bool colored) { this->colored = colored; }
     void SetDrawing(bool drawing) { this->drawing = drawing; }
 
@@ -83,6 +73,8 @@ public:
     void deletePr() override;
     void showPr() override;
     void addToFile() override;
+
+    friend class Bouquet;
 };
 
 class Customer {
@@ -111,17 +103,19 @@ public:
     static void addCustomer(std::vector<Customer>& obj);
     static void deleteCustomer(std::vector<Customer>& obj);
     static void showCustomer(std::vector<Customer>& obj);
-
-    static void addCustomerInfoToFile(std::vector<Customer>& obj);
+    static void addCustomerToFile(std::vector<Customer>& obj);
+    static void showCustomerFileInfo();
 };
 
 int Bouquet::bouquetCount = 0;
+bool Bouquet::wrapperSelect = 0;
+int Customer::count = 0;
 
 void Bouquet::addPr() {
     flowers.clear();
 
     std::cout.setf(std::ios::right);
-    std::cout.width(50);
+    std::cout.width(60);
     std::cout << "\n===! СОЗДАНИЕ БУКЕТА !===" << std::endl;
     std::cout.unsetf(std::ios::right);
 
@@ -173,6 +167,8 @@ void Bouquet::addPr() {
     }
     std::cout << "Итоговая стоимость: " << cost << " руб." << std::endl;
     std::cout << "Количество цветов: " << flowersAmount << std::endl;
+
+    Bouquet::addToFile();
 }
 
 void Bouquet::deletePr() {
@@ -195,7 +191,6 @@ void Bouquet::deletePr() {
 }
 
 void Bouquet::showPr() {
-    std::cout << "\n==========================\n";
     std::cout << "\n===! БУКЕТ #" << bouquetId << " !===" << std::endl;
     std::cout << "Цветов: " << flowersAmount << std::endl;
     std::cout << "Стоимость: " << cost << " руб." << std::endl;
@@ -210,21 +205,21 @@ void Bouquet::showPr() {
         }
     }
     std::cout << std::endl;
-    Bouquet::addToFile();
 }
 
 void Bouquet::addToFile() {
     std::ofstream os;
-    os.open("myFile.txt", std::ofstream::app);
+    os.open(fileName, std::ofstream::app);
 
     if (!os.is_open()) {
-        std::cout << "Файл не удалось открыть";
+        std::cerr << "Файл не удалось открыть\n";
+        return;
     }
     else {
-        os << "\n==========================";
         os << "\n===! Bouquet #" << bouquetId << " !===" << std::endl;
         os << "Flowers amount: " << flowersAmount << std::endl;
         os << "Price: " << cost << " rub." << std::endl;
+        os << "Id: " << bouquetId << std::endl;
 
         std::string flowerNames_[] = { "Rose", "tulip", "sunflower", "lily", "carnation", "hyacint" };
 
@@ -241,34 +236,56 @@ void Bouquet::addToFile() {
     os.close();
 }
 
-int Wrapper::wrapperCount = 0;
+void Bouquet::showFileInfo() {
+    std::ifstream is;
+    is.open(fileName);
+
+    if (is.fail()) {
+        std::cerr << "Файл не удалось открыть\n";
+        return;
+    }
+    else {
+        bool mySelection = false;
+
+        while (!is.eof()) {
+            std::string line;
+            line = "";
+            std::getline(is, line);
+
+            if (line.find("===! Bouquet") != std::string::npos || line.find("===! WRAPPER !===") != std::string::npos) {
+                mySelection = true;
+                continue;
+            }
+            if (mySelection) {
+                if (line.find("===! CUSTOMER DATA !===") != std::string::npos) {
+                    mySelection = false;
+                }
+                else {
+                    std::cout << line;
+                }
+                std::cout << std::endl;
+
+            }
+        }
+    }
+
+    is.close();
+}
 
 void Wrapper::addPr() {
     std::cout.setf(std::ios::right);
     std::cout.width(60);
-    std::cout << "\n===! ДОБАВИТЬ ОБЕРТКУ? !===" << std::endl;
+    std::cout << "\n===! ДОБАВЛЕНИЕ ОБЕРТКИ !===" << std::endl;
     std::cout.unsetf(std::ios::right);
-    std::cout << "1 - Да, 0 - Нет: ";
-    number_filteredInput<bool>(wrapperSelect);
-    if (wrapperSelect) {
 
-        std::cout.setf(std::ios::right);
-        std::cout.width(60);
-        std::cout << "\n===! ДОБАВЛЕНИЕ ОБЕРТКИ !===" << std::endl;
-        std::cout.unsetf(std::ios::right);
+    std::cout << "Обертка будет цветной? (1 - Да, 0 - Нет): ";
+    number_filteredInput<bool>(colored);
+    std::cout << "Обертка будет c рисунком? (1 - Да, 0 - Нет): ";
+    number_filteredInput<bool>(drawing);
 
-        std::cout << "Обертка будет цветной? (1 - Да, 0 - Нет): ";
-        number_filteredInput<bool>(colored);
-        std::cout << "Обертка будет c рисунком? (1 - Да, 0 - Нет): ";
-        number_filteredInput<bool>(drawing);
-
-        Wrapper newWrapper(colored, drawing);
-        allWrappers.push_back(newWrapper);
-        std::cout << "Обертка успешно добавлена!";
-    }
-    else {
-        return;
-    }
+    Wrapper newWrapper(drawing,colored);
+    allWrappers.push_back(newWrapper);
+    Wrapper::addToFile();
 }
 
 void Wrapper::deletePr() {
@@ -289,27 +306,27 @@ void Wrapper::deletePr() {
 }
 
 void Wrapper::showPr() {
-    if (wrapperSelect) {
-        std::cout << "\n===! ОБЕРТКА !===" << std::endl;
-        std::cout << "Цветная: " << (colored ? "Да" : "Нет") << std::endl;
-        std::cout << "С рисунком: " << (drawing ? "Да" : "Нет") << std::endl;
-
-        Wrapper::addToFile();
-    }
+    std::cout << "\n===! ОБЕРТКА !===" << std::endl;
+    std::cout << "Цветная: " << (colored ? "Да" : "Нет") << std::endl;
+    std::cout << "С рисунком: " << (drawing ? "Да" : "Нет") << std::endl;
 }
 
 void Wrapper::addToFile() {
     std::ofstream os;
-    os.open("myFile.txt", std::ofstream::app);
+    os.open(fileName, std::ofstream::app);
 
-    os << "\n===! WRAPPER !===" << std::endl;
-    os << "Colored: " << (colored ? "Yes" : "No") << std::endl;
-    os << "Drawing: " << (drawing ? "Yes" : "No") << std::endl;
+    if (os.fail()) {
+        std::cerr << "Файл не удалось открыть\n";
+        return;
+    }
+    else {
+        os << "\n===! WRAPPER !===" << std::endl;
+        os << "Colored: " << (colored ? "Yes" : "No") << std::endl;
+        os << "Drawing: " << (drawing ? "Yes" : "No") << std::endl;
+    }
 
     os.close();
 }
-
-int Customer::count = 0;
 
 void Customer::addCustomer(std::vector<Customer>& obj) {
     std::string name, city, email;
@@ -324,10 +341,10 @@ void Customer::addCustomer(std::vector<Customer>& obj) {
     std::cout << "Введите город: ";
     letter_filteredInput<std::string>(city, 0, 1);
     std::cout << "Введите email: ";
-    letter_filteredInput<std::string>(email, 1, 0, 1);
+    letter_filteredInput<std::string>(email);
 
     obj.push_back(Customer(name, city, email));
-    addCustomerInfoToFile(obj);
+    addCustomerToFile(obj);
 }
 
 void Customer::deleteCustomer(std::vector<Customer>& obj) {
@@ -348,12 +365,13 @@ void Customer::showCustomer(std::vector<Customer>& obj) {
     }
 }
 
-void Customer::addCustomerInfoToFile(std::vector<Customer>& obj) {
+void Customer::addCustomerToFile(std::vector<Customer>& obj) {
     std::ofstream os;
-    os.open("MyFile.txt", std::ofstream::app);
+    os.open(fileName, std::ofstream::app);
 
     if (!os.is_open()) {
-        std::cout << "Файл не удалось открыть";
+        std::cerr << "Файл не удалось открыть\n";
+        return;
     }
     else {
         os << "\n===! CUSTOMER DATA !===" << std::endl;
@@ -366,4 +384,39 @@ void Customer::addCustomerInfoToFile(std::vector<Customer>& obj) {
     }
 
     os.close();
+}
+
+void Customer::showCustomerFileInfo() {
+    std::ifstream is;
+    is.open(fileName);
+
+    if (is.bad()) {
+        std::cerr << "Файл не удалось открыть\n";
+        return;
+    }
+    else {
+        bool mySelection = false;
+
+        while (!is.eof()) {
+            std::string line;
+            line = "";
+            std::getline(is, line);
+
+            if (line.find("===! CUSTOMER DATA !===") != std::string::npos) {
+                mySelection = true;
+                continue;
+            }
+            if (mySelection) {
+                if (line.empty() || line.find("===! Bouquet") != std::string::npos || line.find("===! WRAPPER !===") != std::string::npos) {
+                    mySelection = false;
+                }
+                else {
+                    std::cout << line;
+                }
+                std::cout << std::endl;
+            }
+        }
+    }
+
+    is.close();
 }

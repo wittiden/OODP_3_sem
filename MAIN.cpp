@@ -183,9 +183,18 @@ int main() {
 						for (int i = 0; i < bqt.size(); i++) {
 							if (idSearch == bqt[i].GetBouquetId()) {
 								bqt[i].showPr();
+								wrppr[i].showPr();
 							}
 						}
 					} while (idSearch != 0);
+
+					std::cout << "\n\n===! ВЫВОД ИНФОРМАЦИИ ИЗ ФАЙЛА !===\n\n";
+					std::cout << "Пользователи: \n";
+					Customer::showCustomerFileInfo();
+
+					std::cout << "Букеты: \n";
+					Bouquet bouquetForShowfileInfo;
+					bouquetForShowfileInfo.showFileInfo();
 
 					hideCursor();
 					system("pause");
