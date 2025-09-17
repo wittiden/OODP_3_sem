@@ -8,6 +8,8 @@
 #include "input_check.h"
 #include "lab1.h"
 
+//constexpr const int ESC = 27;
+
 enum main_menu_names { LAB_1, LAB_2, MAIN_EXIT };
 enum secondary_menu_names { SHOW_LAB_INFO, LAB_IMPLEMENTATION, BACK_TO_MAIN_MENU, SECONDARY_EXIT };
 
@@ -150,7 +152,7 @@ int main() {
 						std::cin.ignore(10, '\n');
 					}
 
-					for (int i = 0; i < bouquetsize; i++) {
+					for (int i = 0; i < bouquetsize; i++) { 
 						Bouquet bouquet;
 						Wrapper wrapper;
 
@@ -193,8 +195,11 @@ int main() {
 					Customer::showCustomerFileInfo();
 
 					std::cout << "Букеты: \n";
-					Bouquet bouquetForShowfileInfo;
-					bouquetForShowfileInfo.showFileInfo();
+					Bouquet bouquetFromFileWork;
+					//bouquetFromFileWork.showFileInfo();
+
+					bouquetFromFileWork.removeByIndex(2);
+					bouquetFromFileWork.showFileInfo();
 
 					hideCursor();
 					system("pause");

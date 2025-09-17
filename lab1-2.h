@@ -3,6 +3,7 @@
 #include<string>
 #include<vector>
 #include<fstream>
+#include<iomanip>
 
 #include "cursor_menu.h"
 #include "cursor_visibility.h"
@@ -49,6 +50,7 @@ public:
     void showPr() override;
     void addToFile() override;
     void showFileInfo();
+    void removeByIndex(int index);
 };
 
 class Wrapper : public Product {
@@ -104,6 +106,7 @@ public:
     static void showCustomer(std::vector<Customer>& obj);
     static void addCustomerToFile(std::vector<Customer>& obj);
     static void showCustomerFileInfo();
+    static void removCustomerByIndex(int index);
 };
 
 int Bouquet::bouquetCount = 0;
@@ -112,12 +115,14 @@ int Customer::count = 0;
 void Bouquet::addPr() {
     flowers.clear();
 
+    std::cout << std::endl;
     std::cout.setf(std::ios::right);
-    std::cout.width(60);
-    std::cout << "\n===! ÑÎÇÄÀÍÈÅ ÁÓÊÅÒÀ !===" << std::endl;
+    std::cout.width(40);
+    std::cout << "===! ÑÎÇÄÀÍÈÅ ÁÓÊÅÒÀ !===";
     std::cout.unsetf(std::ios::right);
+    std::cout << std::endl;
 
-    std::cout << "Ââåäèòå êîëè÷åñòâî öâåòîâ â áóêåòå: ";
+    std::cout << "\nÂâåäèòå êîëè÷åñòâî öâåòîâ â áóêåòå: ";
     while (true) {
         std::cin >> flowersAmount;
         if (!std::cin.fail() && flowersAmount > 0) {
@@ -171,26 +176,27 @@ void Bouquet::addPr() {
 
 void Bouquet::deletePr() {
     if (!flowers.empty()) {
-        std::cout.setf(std::ios::right);
-        std::cout.width(60);
-        std::cout << "\n===! ÓÄÀËÅÍÈÅ ÁÓÊÅÒA !===" << std::endl;
-        std::cout.unsetf(std::ios::right);
-
-        flowers.clear();
-        flowersAmount = 0;
-        cost = 0.0f;
+        flowers.pop_back();
     }
     else {
+        std::cout << std::endl;
         std::cout.setf(std::ios::right);
-        std::cout.width(60);
-        std::cout << "\n===! ÁÓÊÅÒ ÏÓÑÒ !===" << std::endl;
+        std::cout.width(40);
+        std::cout << "===! ÁÓÊÅÒ ÏÓÑÒ !===";
         std::cout.unsetf(std::ios::right);
+        std::cout << std::endl;
     }
 }
 
 void Bouquet::showPr() {
-    std::cout << "\n===! ÁÓÊÅÒ #" << GetBouquetId() << " !===" << std::endl;
-    std::cout << "Öâåòîâ: " << GetFlowersAmount() << std::endl;
+    std::cout << std::endl;
+    std::cout.setf(std::ios::right);
+    std::cout.width(34);
+    std::cout << "===! ÁÓÊÅÒ #" << GetBouquetId() << " !===";
+    std::cout.unsetf(std::ios::right);
+    std::cout << std::endl;
+
+    std::cout << "\nÖâåòîâ: " << GetFlowersAmount() << std::endl;
     std::cout << "Ñòîèìîñòü: " << GetCost() << " ðóá." << std::endl;
 
     std::string flowerNames[] = { "Ðîçà", "Òþëüïàí", "Ïîäñîëíóõ", "Ëèëèÿ", "Ãâîçäèêà", "Ãèàöèíò" };
@@ -246,12 +252,12 @@ void Bouquet::showFileInfo() {
             line = "";
             std::getline(is, line);
 
-            if (line.find("===! Bouquet") != std::string::npos || line.find("===! WRAPPER !===") != std::string::npos) {
+            if (line.find("===! Bouquet #") != std::string::npos || line.find("===! WRAPPER !===") != std::string::npos) {
                 mySelection = true;
                 continue;
             }
             if (mySelection) {
-                if (line.find("===! CUSTOMER DATA !===") != std::string::npos) {
+                if (line.find("===! CUSTOMER DATA #") != std::string::npos) {
                     mySelection = false;
                 }
                 else {
@@ -264,13 +270,56 @@ void Bouquet::showFileInfo() {
     }
 }
 
-void Wrapper::addPr() {
-    std::cout.setf(std::ios::right);
-    std::cout.width(60);
-    std::cout << "\n===! ÄÎÁÀÂËÅÍÈÅ ÎÁÅÐÒÊÈ !===" << std::endl;
-    std::cout.unsetf(std::ios::right);
+void Bouquet::removeByIndex(int index) {
+    std::ifstream is(fileName);
+    if (!is.is_open()) {
+        std::cerr << "Ôàéë íå óäàëîñü îòêðûòü\n";
+        return;
+    }
+    else {
+        std::vector<std::string> lines;
+        std::string line;
+        line = "";
+        int count = 0;
+        bool skip = false;
 
-    std::cout << "Îáåðòêà áóäåò öâåòíîé? (1 - Äà, 0 - Íåò): ";
+        while (std::getline(is,line)) {
+            if (line.find("===! Bouquet #") != std::string::npos) {
+                count++;
+                if (count == index) {
+                    skip = true;
+                    continue;
+                }
+            }
+            if (skip && line.find("===! WRAPPER !===") != std::string::npos) {
+                skip = true;
+                continue;
+            }
+            if (skip && line.find("===") != std::string::npos) {
+                skip = false;
+            }
+            if (!skip) {
+                lines.push_back(line);
+            }
+        }
+        is.close();
+
+        std::ofstream os(fileName);
+        for (const auto& container : lines) {
+            os << container << std::endl;
+        }
+    }
+}
+
+void Wrapper::addPr() {
+    std::cout << std::endl;
+    std::cout.setf(std::ios::right);
+    std::cout.width(40);
+    std::cout << "===! ÄÎÁÀÂËÅÍÈÅ ÎÁÅÐÒÊÈ !===";
+    std::cout.unsetf(std::ios::right);
+    std::cout << std::endl;
+
+    std::cout << "\nÎáåðòêà áóäåò öâåòíîé? (1 - Äà, 0 - Íåò): ";
     number_filteredInput<bool>(colored);
     std::cout << "Îáåðòêà áóäåò c ðèñóíêîì? (1 - Äà, 0 - Íåò): ";
     number_filteredInput<bool>(drawing);
@@ -282,23 +331,26 @@ void Wrapper::addPr() {
 
 void Wrapper::deletePr() {
     if (!allWrappers.empty()) {
-        std::cout.setf(std::ios::right);
-        std::cout.width(60);
-        std::cout << "\n===! ÓÄÀËÅÍÈÅ ÎÁÅÐÒÊÈ !===" << std::endl;
-        std::cout.unsetf(std::ios::right);
-
-        allWrappers.clear();
+        allWrappers.pop_back();
     }
     else {
+        std::cout << std::endl;
         std::cout.setf(std::ios::right);
-        std::cout.width(60);
-        std::cout << "\n===! ÌÅÍÞ ÎÁÅÐÒÎÊ ÏÓÑÒÎ !===" << std::endl;
+        std::cout.width(40);
+        std::cout << "===! ÌÅÍÞ ÎÁÅÐÒÎÊ ÏÓÑÒÎ !===";
         std::cout.unsetf(std::ios::right);
+        std::cout << std::endl;
     }
 }
 
 void Wrapper::showPr() {
-    std::cout << "\n===! ÎÁÅÐÒÊÀ !===" << std::endl;
+    std::cout << std::endl;
+    std::cout.setf(std::ios::right);
+    std::cout.width(40);
+    std::cout << "===! ÎÁÅÐÒÊÀ !===";
+    std::cout.unsetf(std::ios::right);
+    std::cout << std::endl;
+
     std::cout << "Öâåòíàÿ: " << (GetColored() ? "Äà" : "Íåò") << std::endl;
     std::cout << "Ñ ðèñóíêîì: " << (GetDrawing() ? "Äà" : "Íåò") << std::endl;
 }
@@ -320,10 +372,12 @@ void Wrapper::addToFile() {
 void Customer::addCustomer(std::vector<Customer>& obj) {
     std::string name, city, email;
 
+    std::cout << std::endl;
     std::cout.setf(std::ios::right);
-    std::cout.width(60);
-    std::cout << "\n===! ÄÎÁÀÂËÅÍÈÅ ÄÀÍÍÛÕ ÊËÈÅÍÒÀ !===" << std::endl;
+    std::cout.width(40);
+    std::cout << "===! ÄÎÁÀÂËÅÍÈÅ ÄÀÍÍÛÕ ÊËÈÅÍÒÀ !===";
     std::cout.unsetf(std::ios::right);
+    std::cout << std::endl;
 
     std::cout << "\nÂâåäèòå èìÿ: ";
     letter_filteredInput<std::string>(name, 0, 1);
@@ -338,17 +392,26 @@ void Customer::addCustomer(std::vector<Customer>& obj) {
 
 void Customer::deleteCustomer(std::vector<Customer>& obj) {
     if (!obj.empty()) {
-        while (obj.size() != 0) {
-            obj.pop_back();
-        }
+        obj.pop_back();
+    }
+    else {
+        std::cout << std::endl;
+        std::cout.setf(std::ios::right);
+        std::cout.width(40);
+        std::cout << "===! ÑÏÈÑÎÊ ÇÀÊÀÇ×ÊÎÂ ÏÓÑÒ !===";
+        std::cout.unsetf(std::ios::right);
+        std::cout << std::endl;
     }
 }
 
 void Customer::showCustomer(std::vector<Customer>& obj) {
+    std::cout << std::endl;
     std::cout.setf(std::ios::right);
-    std::cout.width(60);
-    std::cout << "\n===! ÄÀÍÍÛÅ ÊËÈÅÍÒÀ !===" << std::endl;
+    std::cout.width(40);
+    std::cout << "===! ÄÀÍÍÛÅ ÊËÈÅÍÒÀ !===";
     std::cout.unsetf(std::ios::right);
+    std::cout << std::endl;
+
 
     for (const auto& container : obj) {
         std::cout << "Èìÿ: " << container.GetName() << std::endl;
@@ -366,12 +429,11 @@ void Customer::addCustomerToFile(std::vector<Customer>& obj) {
         return;
     }
     else {
-        os << "\n===! CUSTOMER DATA !===" << std::endl;
         for (const auto& container : obj) {
+            os << "\n===! CUSTOMER DATA #" << container.GetId() << " !===" << std::endl;
             os << "Name: " << container.GetName() << std::endl;
             os << "City: " << container.GetCity() << std::endl;
             os << "Email: " << container.GetEmail() << std::endl;
-            os << "ID: " << container.GetId() << std::endl;
         }
     }
 }
@@ -391,12 +453,12 @@ void Customer::showCustomerFileInfo() {
             line = "";
             std::getline(is, line);
 
-            if (line.find("===! CUSTOMER DATA !===") != std::string::npos) {
+            if (line.find("===! CUSTOMER DATA #") != std::string::npos) {
                 mySelection = true;
                 continue;
             }
             if (mySelection) {
-                if (line.empty() || line.find("===! Bouquet") != std::string::npos || line.find("===! WRAPPER !===") != std::string::npos) {
+                if (line.empty() || line.find("===! Bouquet #") != std::string::npos || line.find("===! WRAPPER !===") != std::string::npos) {
                     mySelection = false;
                 }
                 else {
@@ -404,6 +466,43 @@ void Customer::showCustomerFileInfo() {
                 }
                 std::cout << std::endl;
             }
+        }
+    }
+}
+
+void removCustomerByIndex(int index){
+    std::ifstream is(fileName);
+    if (is.fail()) {
+        std::cerr << "Ôàéë íå óäàëîñü îòêðûòü\n";
+        return;
+    }
+    else {
+        std::vector<std::string> lines;
+        std::string line;
+        line = "";
+        int count = 0;
+        bool skip = false;
+
+        while (std::getline(is, line)) {
+            if (line.find("===! CUSTOMER DATA") != std::string::npos) {
+                count++;
+                if (count == index) {
+                    skip = true;
+                    continue;
+                }
+            }
+            if (skip && line.find("===") != std::string::npos) {
+                skip = false;
+            }
+            if (!skip) {
+                lines.push_back(line);
+            }
+        }
+        is.close();
+
+        std::ofstream os(fileName);
+        for (const auto& container : lines) {
+            os << container << std::endl;
         }
     }
 }
