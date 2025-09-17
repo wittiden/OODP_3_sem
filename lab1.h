@@ -29,7 +29,6 @@ class Bouquet : public Product {
     std::vector<Flowers> flowers;
     int bouquetId;
     static int bouquetCount;
-    static bool wrapperSelect;
 public:
     Bouquet() { cost = 0.0f; flowersAmount = 0; bouquetCount++; bouquetId = bouquetCount; }
     Bouquet(float cost) :Bouquet() { this->cost = cost; }
@@ -108,7 +107,6 @@ public:
 };
 
 int Bouquet::bouquetCount = 0;
-bool Bouquet::wrapperSelect = 0;
 int Customer::count = 0;
 
 void Bouquet::addPr() {
@@ -191,9 +189,9 @@ void Bouquet::deletePr() {
 }
 
 void Bouquet::showPr() {
-    std::cout << "\n===! БУКЕТ #" << bouquetId << " !===" << std::endl;
-    std::cout << "Цветов: " << flowersAmount << std::endl;
-    std::cout << "Стоимость: " << cost << " руб." << std::endl;
+    std::cout << "\n===! БУКЕТ #" << GetBouquetId() << " !===" << std::endl;
+    std::cout << "Цветов: " << GetFlowersAmount() << std::endl;
+    std::cout << "Стоимость: " << GetCost() << " руб." << std::endl;
 
     std::string flowerNames[] = { "Роза", "Тюльпан", "Подсолнух", "Лилия", "Гвоздика", "Гиацинт" };
 
@@ -208,18 +206,17 @@ void Bouquet::showPr() {
 }
 
 void Bouquet::addToFile() {
-    std::ofstream os;
-    os.open(fileName, std::ofstream::app);
+    std::ofstream os(fileName, std::ofstream::app);
 
     if (!os.is_open()) {
         std::cerr << "Файл не удалось открыть\n";
         return;
     }
     else {
-        os << "\n===! Bouquet #" << bouquetId << " !===" << std::endl;
-        os << "Flowers amount: " << flowersAmount << std::endl;
-        os << "Price: " << cost << " rub." << std::endl;
-        os << "Id: " << bouquetId << std::endl;
+        os << "\n===! Bouquet #" << GetBouquetId() << " !===" << std::endl;
+        os << "Flowers amount: " << GetFlowersAmount() << std::endl;
+        os << "Price: " << GetCost() << " rub." << std::endl;
+        os << "Id: " << GetBouquetId() << std::endl;
 
         std::string flowerNames_[] = { "Rose", "tulip", "sunflower", "lily", "carnation", "hyacint" };
 
@@ -232,13 +229,10 @@ void Bouquet::addToFile() {
         }
         os << std::endl;
     }
-
-    os.close();
 }
 
 void Bouquet::showFileInfo() {
-    std::ifstream is;
-    is.open(fileName);
+    std::ifstream is(fileName);
 
     if (is.fail()) {
         std::cerr << "Файл не удалось открыть\n";
@@ -268,8 +262,6 @@ void Bouquet::showFileInfo() {
             }
         }
     }
-
-    is.close();
 }
 
 void Wrapper::addPr() {
@@ -307,13 +299,12 @@ void Wrapper::deletePr() {
 
 void Wrapper::showPr() {
     std::cout << "\n===! ОБЕРТКА !===" << std::endl;
-    std::cout << "Цветная: " << (colored ? "Да" : "Нет") << std::endl;
-    std::cout << "С рисунком: " << (drawing ? "Да" : "Нет") << std::endl;
+    std::cout << "Цветная: " << (GetColored() ? "Да" : "Нет") << std::endl;
+    std::cout << "С рисунком: " << (GetDrawing() ? "Да" : "Нет") << std::endl;
 }
 
 void Wrapper::addToFile() {
-    std::ofstream os;
-    os.open(fileName, std::ofstream::app);
+    std::ofstream os(fileName, std::ofstream::app);
 
     if (os.fail()) {
         std::cerr << "Файл не удалось открыть\n";
@@ -321,11 +312,9 @@ void Wrapper::addToFile() {
     }
     else {
         os << "\n===! WRAPPER !===" << std::endl;
-        os << "Colored: " << (colored ? "Yes" : "No") << std::endl;
-        os << "Drawing: " << (drawing ? "Yes" : "No") << std::endl;
+        os << "Colored: " << (GetColored() ? "Yes" : "No") << std::endl;
+        os << "Drawing: " << (GetDrawing() ? "Yes" : "No") << std::endl;
     }
-
-    os.close();
 }
 
 void Customer::addCustomer(std::vector<Customer>& obj) {
@@ -348,7 +337,11 @@ void Customer::addCustomer(std::vector<Customer>& obj) {
 }
 
 void Customer::deleteCustomer(std::vector<Customer>& obj) {
-    if (!obj.empty()) obj.pop_back();
+    if (!obj.empty()) {
+        while (obj.size() != 0) {
+            obj.pop_back();
+        }
+    }
 }
 
 void Customer::showCustomer(std::vector<Customer>& obj) {
@@ -357,17 +350,16 @@ void Customer::showCustomer(std::vector<Customer>& obj) {
     std::cout << "\n===! ДАННЫЕ КЛИЕНТА !===" << std::endl;
     std::cout.unsetf(std::ios::right);
 
-    for (int i = 0; i < obj.size(); i++) {
-        std::cout << "Имя: " << obj[i].name << std::endl;
-        std::cout << "Город: " << obj[i].city << std::endl;
-        std::cout << "Email: " << obj[i].email << std::endl;
-        std::cout << "ID: " << obj[i].id << std::endl;
+    for (const auto& container : obj) {
+        std::cout << "Имя: " << container.GetName() << std::endl;
+        std::cout << "Город: " << container.GetCity() << std::endl;
+        std::cout << "Email: " << container.email << std::endl;
+        std::cout << "ID: " << container.id << std::endl;
     }
 }
 
 void Customer::addCustomerToFile(std::vector<Customer>& obj) {
-    std::ofstream os;
-    os.open(fileName, std::ofstream::app);
+    std::ofstream os(fileName, std::ofstream::app);
 
     if (!os.is_open()) {
         std::cerr << "Файл не удалось открыть\n";
@@ -375,20 +367,17 @@ void Customer::addCustomerToFile(std::vector<Customer>& obj) {
     }
     else {
         os << "\n===! CUSTOMER DATA !===" << std::endl;
-        for (int i = 0; i < obj.size(); i++) {
-            os << "Name: " << obj[i].GetName() << std::endl;
-            os << "City: " << obj[i].GetCity() << std::endl;
-            os << "Email: " << obj[i].GetEmail() << std::endl;
-            os << "ID: " << obj[i].GetId() << std::endl;
+        for (const auto& container : obj) {
+            os << "Name: " << container.GetName() << std::endl;
+            os << "City: " << container.GetCity() << std::endl;
+            os << "Email: " << container.GetEmail() << std::endl;
+            os << "ID: " << container.GetId() << std::endl;
         }
     }
-
-    os.close();
 }
 
 void Customer::showCustomerFileInfo() {
-    std::ifstream is;
-    is.open(fileName);
+    std::ifstream is(fileName);
 
     if (is.bad()) {
         std::cerr << "Файл не удалось открыть\n";
@@ -417,6 +406,4 @@ void Customer::showCustomerFileInfo() {
             }
         }
     }
-
-    is.close();
 }
