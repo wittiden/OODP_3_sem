@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include<iostream>
 #include<string>
 #include<vector>
@@ -11,14 +11,11 @@
 
 const std::string fileName = "myFile.txt";
 
-enum Flowers {
-    rose, tulip, sunflower, lily, carnation, hyacint
-};
+enum Flowers { rose, tulip, sunflower, lily, carnation, hyacint };
 
 class Product {
 public:
     virtual void addPr() = 0;
-    virtual void deletePr() = 0;
     virtual void showPr() = 0;
     virtual void addToFile() = 0;
     virtual ~Product() {}
@@ -46,7 +43,6 @@ public:
     void SetFlowersAmount(int flowersamount) { this->flowersAmount = flowersamount; }
 
     void addPr() override;
-    void deletePr() override;
     void showPr() override;
     void addToFile() override;
     void showFileInfo();
@@ -71,7 +67,6 @@ public:
     void SetDrawing(bool drawing) { this->drawing = drawing; }
 
     void addPr() override;
-    void deletePr() override;
     void showPr() override;
     void addToFile() override;
 
@@ -106,7 +101,9 @@ public:
     static void showCustomer(std::vector<Customer>& obj);
     static void addCustomerToFile(std::vector<Customer>& obj);
     static void showCustomerFileInfo();
-    static void removCustomerByIndex(int index);
+    void removCustomerByIndex(int index);
+
+    friend std::ostream& operator<<(std::ostream& os, const Customer& obj);
 };
 
 int Bouquet::bouquetCount = 0;
@@ -118,42 +115,42 @@ void Bouquet::addPr() {
     std::cout << std::endl;
     std::cout.setf(std::ios::right);
     std::cout.width(40);
-    std::cout << "===! ÑÎÇÄÀÍÈÅ ÁÓÊÅÒÀ !===";
+    std::cout << "===! Ð¡ÐžÐ—Ð”ÐÐÐ˜Ð• Ð‘Ð£ÐšÐ•Ð¢Ð !===";
     std::cout.unsetf(std::ios::right);
     std::cout << std::endl;
 
-    std::cout << "\nÂâåäèòå êîëè÷åñòâî öâåòîâ â áóêåòå: ";
+    std::cout << "\nÐ’Ð²ÐµÐ´Ð¸Ñ‚Ðµ ÐºÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾ Ñ†Ð²ÐµÑ‚Ð¾Ð² Ð² Ð±ÑƒÐºÐµÑ‚Ðµ: ";
     while (true) {
         std::cin >> flowersAmount;
         if (!std::cin.fail() && flowersAmount > 0) {
             break;
         }
         std::cin.clear();
-        std::cout << "Íåïðàâèëüíûé ââîä äàííûõ\n";
+        std::cerr << "ÐÐµÐ¿Ñ€Ð°Ð²Ð¸Ð»ÑŒÐ½Ñ‹Ð¹ Ð²Ð²Ð¾Ð´ Ð´Ð°Ð½Ð½Ñ‹Ñ…\n";
         std::cin.ignore(10, '\n');
     }
 
     float flowerPrices[]{ 150.0f, 100.0f, 120.0f, 130.0f, 90.0f, 110.0f };
-    std::string flowersNames[]{ "Ðîçà", "Òþëüïàí", "Ïîäñîëíóõ", "Ëèëèÿ", "Ãâîçäèêà", "Ãèàöèíò" };
+    std::string flowersNames[]{ "Ð Ð¾Ð·Ð°", "Ð¢ÑŽÐ»ÑŒÐ¿Ð°Ð½", "ÐŸÐ¾Ð´ÑÐ¾Ð»Ð½ÑƒÑ…", "Ð›Ð¸Ð»Ð¸Ñ", "Ð“Ð²Ð¾Ð·Ð´Ð¸ÐºÐ°", "Ð“Ð¸Ð°Ñ†Ð¸Ð½Ñ‚" };
 
     for (int i = 0; i < flowersAmount; i++) {
-        std::cout << "\nÂûáåðèòå öâåòîê " << i + 1 << " èç " << flowersAmount << ":" << std::endl;
-        std::cout << "0 - Ðîçà (150 ðóá.)" << std::endl;
-        std::cout << "1 - Òþëüïàí (100 ðóá.)" << std::endl;
-        std::cout << "2 - Ïîäñîëíóõ (120 ðóá.)" << std::endl;
-        std::cout << "3 - Ëèëèÿ (130 ðóá.)" << std::endl;
-        std::cout << "4 - Ãâîçäèêà (90 ðóá.)" << std::endl;
-        std::cout << "5 - Ãèàöèíò (110 ðóá.)" << std::endl;
+        std::cout << "\nÐ’Ñ‹Ð±ÐµÑ€Ð¸Ñ‚Ðµ Ñ†Ð²ÐµÑ‚Ð¾Ðº " << i + 1 << " Ð¸Ð· " << flowersAmount << ":" << std::endl;
+        std::cout << "0 - Ð Ð¾Ð·Ð° (150 Ñ€ÑƒÐ±.)" << std::endl;
+        std::cout << "1 - Ð¢ÑŽÐ»ÑŒÐ¿Ð°Ð½ (100 Ñ€ÑƒÐ±.)" << std::endl;
+        std::cout << "2 - ÐŸÐ¾Ð´ÑÐ¾Ð»Ð½ÑƒÑ… (120 Ñ€ÑƒÐ±.)" << std::endl;
+        std::cout << "3 - Ð›Ð¸Ð»Ð¸Ñ (130 Ñ€ÑƒÐ±.)" << std::endl;
+        std::cout << "4 - Ð“Ð²Ð¾Ð·Ð´Ð¸ÐºÐ° (90 Ñ€ÑƒÐ±.)" << std::endl;
+        std::cout << "5 - Ð“Ð¸Ð°Ñ†Ð¸Ð½Ñ‚ (110 Ñ€ÑƒÐ±.)" << std::endl;
 
         int choice;
-        std::cout << "Âàø âûáîð: ";
+        std::cout << "Ð’Ð°Ñˆ Ð²Ñ‹Ð±Ð¾Ñ€: ";
         while (true) {
             std::cin >> choice;
             if (std::cin.good()) {
                 break;
             }
             std::cin.clear();
-            std::cout << "Íåïðàâèëüíûé ââîä äàííûõ\n";
+            std::cerr << "ÐÐµÐ¿Ñ€Ð°Ð²Ð¸Ð»ÑŒÐ½Ñ‹Ð¹ Ð²Ð²Ð¾Ð´ Ð´Ð°Ð½Ð½Ñ‹Ñ…\n";
             std::cin.ignore(10, '\n');
         }
 
@@ -164,58 +161,48 @@ void Bouquet::addPr() {
             cost += flowerPrices[choice];
         }
         else {
-            std::cout << "Íåâåðíûé âûáîð! Ïðîïóñêàåì ýòîò öâåòîê." << std::endl;
+            std::cout << "ÐÐµÐ²ÐµÑ€Ð½Ñ‹Ð¹ Ð²Ñ‹Ð±Ð¾Ñ€! ÐŸÑ€Ð¾Ð¿ÑƒÑÐºÐ°ÐµÐ¼ ÑÑ‚Ð¾Ñ‚ Ñ†Ð²ÐµÑ‚Ð¾Ðº." << std::endl;
             i--;
         }
     }
-    std::cout << "Èòîãîâàÿ ñòîèìîñòü: " << cost << " ðóá." << std::endl;
-    std::cout << "Êîëè÷åñòâî öâåòîâ: " << flowersAmount << std::endl;
+    std::cout << "Ð˜Ñ‚Ð¾Ð³Ð¾Ð²Ð°Ñ ÑÑ‚Ð¾Ð¸Ð¼Ð¾ÑÑ‚ÑŒ: " << cost << " Ñ€ÑƒÐ±." << std::endl;
+    std::cout << "ÐšÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾ Ñ†Ð²ÐµÑ‚Ð¾Ð²: " << flowersAmount << std::endl;
 
     Bouquet::addToFile();
 }
 
-void Bouquet::deletePr() {
-    if (!flowers.empty()) {
-        flowers.pop_back();
-    }
-    else {
-        std::cout << std::endl;
-        std::cout.setf(std::ios::right);
-        std::cout.width(40);
-        std::cout << "===! ÁÓÊÅÒ ÏÓÑÒ !===";
-        std::cout.unsetf(std::ios::right);
-        std::cout << std::endl;
-    }
-}
-
 void Bouquet::showPr() {
-    std::cout << std::endl;
-    std::cout.setf(std::ios::right);
-    std::cout.width(34);
-    std::cout << "===! ÁÓÊÅÒ #" << GetBouquetId() << " !===";
-    std::cout.unsetf(std::ios::right);
-    std::cout << std::endl;
+    std::ios::fmtflags originalFlags = std::cout.flags();
 
-    std::cout << "\nÖâåòîâ: " << GetFlowersAmount() << std::endl;
-    std::cout << "Ñòîèìîñòü: " << GetCost() << " ðóá." << std::endl;
+    std::cout << "\n\n\n";
 
-    std::string flowerNames[] = { "Ðîçà", "Òþëüïàí", "Ïîäñîëíóõ", "Ëèëèÿ", "Ãâîçäèêà", "Ãèàöèíò" };
+    std::cout << "                      Ð‘Ð£ÐšÐ•Ð¢ #" << GetBouquetId() << std::endl;
+    std::cout << "======================================================" << std::endl;
 
-    std::cout << "Ñîñòàâ: ";
+    std::cout << "ÐšÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾ Ñ†Ð²ÐµÑ‚Ð¾Ð²: " << GetFlowersAmount() << std::endl;
+    std::cout << "Ð¡Ñ‚Ð¾Ð¸Ð¼Ð¾ÑÑ‚ÑŒ:        " << GetCost() << " Ñ€ÑƒÐ±." << std::endl;
+
+    std::string flowerNames[] = { "Ð Ð¾Ð·Ð°", "Ð¢ÑŽÐ»ÑŒÐ¿Ð°Ð½", "ÐŸÐ¾Ð´ÑÐ¾Ð»Ð½ÑƒÑ…", "Ð›Ð¸Ð»Ð¸Ñ", "Ð“Ð²Ð¾Ð·Ð´Ð¸ÐºÐ°", "Ð“Ð¸Ð°Ñ†Ð¸Ð½Ñ‚" };
+
+    std::cout << "------------------------------------------------------" << std::endl;
+    std::cout << "Ð¡Ð¾ÑÑ‚Ð°Ð² Ð±ÑƒÐºÐµÑ‚Ð°:" << std::endl;
+
     for (int i = 0; i < flowers.size(); i++) {
-        std::cout << flowerNames[flowers[i]];
+        std::cout << "- " << flowerNames[flowers[i]];
         if (i < flowers.size() - 1) {
-            std::cout << ", ";
+            std::cout << std::endl;
         }
     }
     std::cout << std::endl;
-}
+    std::cout << "======================================================" << std::endl;
 
+    std::cout.flags(originalFlags);
+}
 void Bouquet::addToFile() {
     std::ofstream os(fileName, std::ofstream::app);
 
     if (!os.is_open()) {
-        std::cerr << "Ôàéë íå óäàëîñü îòêðûòü\n";
+        std::cerr << "Ð¤Ð°Ð¹Ð» Ð½Ðµ ÑƒÐ´Ð°Ð»Ð¾ÑÑŒ Ð¾Ñ‚ÐºÑ€Ñ‹Ñ‚ÑŒ\n";
         return;
     }
     else {
@@ -241,7 +228,7 @@ void Bouquet::showFileInfo() {
     std::ifstream is(fileName);
 
     if (is.fail()) {
-        std::cerr << "Ôàéë íå óäàëîñü îòêðûòü\n";
+        std::cerr << "Ð¤Ð°Ð¹Ð» Ð½Ðµ ÑƒÐ´Ð°Ð»Ð¾ÑÑŒ Ð¾Ñ‚ÐºÑ€Ñ‹Ñ‚ÑŒ\n";
         return;
     }
     else {
@@ -273,7 +260,7 @@ void Bouquet::showFileInfo() {
 void Bouquet::removeByIndex(int index) {
     std::ifstream is(fileName);
     if (!is.is_open()) {
-        std::cerr << "Ôàéë íå óäàëîñü îòêðûòü\n";
+        std::cerr << "Ð¤Ð°Ð¹Ð» Ð½Ðµ ÑƒÐ´Ð°Ð»Ð¾ÑÑŒ Ð¾Ñ‚ÐºÑ€Ñ‹Ñ‚ÑŒ\n";
         return;
     }
     else {
@@ -315,13 +302,13 @@ void Wrapper::addPr() {
     std::cout << std::endl;
     std::cout.setf(std::ios::right);
     std::cout.width(40);
-    std::cout << "===! ÄÎÁÀÂËÅÍÈÅ ÎÁÅÐÒÊÈ !===";
+    std::cout << "===! Ð”ÐžÐ‘ÐÐ’Ð›Ð•ÐÐ˜Ð• ÐžÐ‘Ð•Ð Ð¢ÐšÐ˜ !===";
     std::cout.unsetf(std::ios::right);
     std::cout << std::endl;
 
-    std::cout << "\nÎáåðòêà áóäåò öâåòíîé? (1 - Äà, 0 - Íåò): ";
+    std::cout << "\nÐžÐ±ÐµÑ€Ñ‚ÐºÐ° Ð±ÑƒÐ´ÐµÑ‚ Ñ†Ð²ÐµÑ‚Ð½Ð¾Ð¹? (1 - Ð”Ð°, 0 - ÐÐµÑ‚): ";
     number_filteredInput<bool>(colored);
-    std::cout << "Îáåðòêà áóäåò c ðèñóíêîì? (1 - Äà, 0 - Íåò): ";
+    std::cout << "ÐžÐ±ÐµÑ€Ñ‚ÐºÐ° Ð±ÑƒÐ´ÐµÑ‚ c Ñ€Ð¸ÑÑƒÐ½ÐºÐ¾Ð¼? (1 - Ð”Ð°, 0 - ÐÐµÑ‚): ";
     number_filteredInput<bool>(drawing);
 
     Wrapper newWrapper(drawing,colored);
@@ -329,37 +316,25 @@ void Wrapper::addPr() {
     Wrapper::addToFile();
 }
 
-void Wrapper::deletePr() {
-    if (!allWrappers.empty()) {
-        allWrappers.pop_back();
-    }
-    else {
-        std::cout << std::endl;
-        std::cout.setf(std::ios::right);
-        std::cout.width(40);
-        std::cout << "===! ÌÅÍÞ ÎÁÅÐÒÎÊ ÏÓÑÒÎ !===";
-        std::cout.unsetf(std::ios::right);
-        std::cout << std::endl;
-    }
-}
-
 void Wrapper::showPr() {
-    std::cout << std::endl;
-    std::cout.setf(std::ios::right);
-    std::cout.width(40);
-    std::cout << "===! ÎÁÅÐÒÊÀ !===";
-    std::cout.unsetf(std::ios::right);
-    std::cout << std::endl;
+    std::ios::fmtflags originalFlags = std::cout.flags();
 
-    std::cout << "Öâåòíàÿ: " << (GetColored() ? "Äà" : "Íåò") << std::endl;
-    std::cout << "Ñ ðèñóíêîì: " << (GetDrawing() ? "Äà" : "Íåò") << std::endl;
+    std::cout << "                       ÐžÐ‘Ð•Ð Ð¢ÐšÐ" << std::endl;
+    std::cout << "======================================================" << std::endl;
+
+    std::cout << "Ð¦Ð²ÐµÑ‚Ð½Ð°Ñ:   " << (GetColored() ? "Ð”Ð°" : "ÐÐµÑ‚") << std::endl;
+    std::cout << "Ð¡ Ñ€Ð¸ÑÑƒÐ½ÐºÐ¾Ð¼: " << (GetDrawing() ? "Ð”Ð°" : "ÐÐµÑ‚") << std::endl;
+
+    std::cout << "======================================================" << std::endl;
+
+    std::cout.flags(originalFlags);
 }
 
 void Wrapper::addToFile() {
     std::ofstream os(fileName, std::ofstream::app);
 
     if (os.fail()) {
-        std::cerr << "Ôàéë íå óäàëîñü îòêðûòü\n";
+        std::cerr << "Ð¤Ð°Ð¹Ð» Ð½Ðµ ÑƒÐ´Ð°Ð»Ð¾ÑÑŒ Ð¾Ñ‚ÐºÑ€Ñ‹Ñ‚ÑŒ\n";
         return;
     }
     else {
@@ -375,15 +350,15 @@ void Customer::addCustomer(std::vector<Customer>& obj) {
     std::cout << std::endl;
     std::cout.setf(std::ios::right);
     std::cout.width(40);
-    std::cout << "===! ÄÎÁÀÂËÅÍÈÅ ÄÀÍÍÛÕ ÊËÈÅÍÒÀ !===";
+    std::cout << "===! Ð”ÐžÐ‘ÐÐ’Ð›Ð•ÐÐ˜Ð• Ð”ÐÐÐÐ«Ð¥ ÐšÐ›Ð˜Ð•ÐÐ¢Ð !===";
     std::cout.unsetf(std::ios::right);
     std::cout << std::endl;
 
-    std::cout << "\nÂâåäèòå èìÿ: ";
+    std::cout << "\nÐ’Ð²ÐµÐ´Ð¸Ñ‚Ðµ Ð¸Ð¼Ñ: ";
     letter_filteredInput<std::string>(name, 0, 1);
-    std::cout << "Ââåäèòå ãîðîä: ";
+    std::cout << "Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ Ð³Ð¾Ñ€Ð¾Ð´: ";
     letter_filteredInput<std::string>(city, 0, 1);
-    std::cout << "Ââåäèòå email: ";
+    std::cout << "Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ email: ";
     letter_filteredInput<std::string>(email);
 
     obj.push_back(Customer(name, city, email));
@@ -398,51 +373,63 @@ void Customer::deleteCustomer(std::vector<Customer>& obj) {
         std::cout << std::endl;
         std::cout.setf(std::ios::right);
         std::cout.width(40);
-        std::cout << "===! ÑÏÈÑÎÊ ÇÀÊÀÇ×ÊÎÂ ÏÓÑÒ !===";
+        std::cout << "===! Ð¡ÐŸÐ˜Ð¡ÐžÐš Ð—ÐÐšÐÐ—Ð§ÐšÐžÐ’ ÐŸÐ£Ð¡Ð¢ !===";
         std::cout.unsetf(std::ios::right);
         std::cout << std::endl;
     }
 }
 
 void Customer::showCustomer(std::vector<Customer>& obj) {
-    std::cout << std::endl;
-    std::cout.setf(std::ios::right);
-    std::cout.width(40);
-    std::cout << "===! ÄÀÍÍÛÅ ÊËÈÅÍÒÀ !===";
-    std::cout.unsetf(std::ios::right);
-    std::cout << std::endl;
+    std::ios::fmtflags originalFlags = std::cout.flags();
 
+    std::cout << "\n\n\n\n";
+    std::cout << "       Ð”ÐÐÐÐ«Ð• ÐšÐ›Ð˜Ð•ÐÐ¢Ð" << std::endl;
+    std::cout << "============================" << std::endl;
 
     for (const auto& container : obj) {
-        std::cout << "Èìÿ: " << container.GetName() << std::endl;
-        std::cout << "Ãîðîä: " << container.GetCity() << std::endl;
-        std::cout << "Email: " << container.email << std::endl;
-        std::cout << "ID: " << container.id << std::endl;
+        std::cout << "ID:    " << container.id << std::endl;
+        std::cout << "Ð˜Ð¼Ñ:   " << container.GetName() << std::endl;
+        std::cout << "Ð“Ð¾Ñ€Ð¾Ð´: " << container.GetCity() << std::endl;
+        std::cout << "Email: " << container.GetEmail() << std::endl;
+        std::cout << "============================" << std::endl;
     }
+
+    std::cout.flags(originalFlags);
 }
 
 void Customer::addCustomerToFile(std::vector<Customer>& obj) {
     std::ofstream os(fileName, std::ofstream::app);
 
     if (!os.is_open()) {
-        std::cerr << "Ôàéë íå óäàëîñü îòêðûòü\n";
+        std::cerr << "Ð¤Ð°Ð¹Ð» Ð½Ðµ ÑƒÐ´Ð°Ð»Ð¾ÑÑŒ Ð¾Ñ‚ÐºÑ€Ñ‹Ñ‚ÑŒ\n";
         return;
     }
     else {
         for (const auto& container : obj) {
-            os << "\n===! CUSTOMER DATA #" << container.GetId() << " !===" << std::endl;
-            os << "Name: " << container.GetName() << std::endl;
-            os << "City: " << container.GetCity() << std::endl;
-            os << "Email: " << container.GetEmail() << std::endl;
+            os << container;
         }
     }
+}
+
+std::ostream& operator<<(std::ostream& os, const Customer& obj) {
+
+    os << "\n===! CUSTOMER DATA #" << obj.GetId() << " !===" << std::endl;
+    os << "Name: " << obj.GetName() << std::endl;
+    os << "City: " << obj.GetCity() << std::endl;
+    os << "Email: " << obj.GetEmail() << std::endl;
+
+    return os;
+}
+
+std::ifstream& operator>>(std::ifstream& is, const Customer& obj) {
+    return is;
 }
 
 void Customer::showCustomerFileInfo() {
     std::ifstream is(fileName);
 
     if (is.bad()) {
-        std::cerr << "Ôàéë íå óäàëîñü îòêðûòü\n";
+        std::cerr << "Ð¤Ð°Ð¹Ð» Ð½Ðµ ÑƒÐ´Ð°Ð»Ð¾ÑÑŒ Ð¾Ñ‚ÐºÑ€Ñ‹Ñ‚ÑŒ\n";
         return;
     }
     else {
@@ -470,10 +457,10 @@ void Customer::showCustomerFileInfo() {
     }
 }
 
-void removCustomerByIndex(int index){
+void Customer::removCustomerByIndex(int index) {
     std::ifstream is(fileName);
     if (is.fail()) {
-        std::cerr << "Ôàéë íå óäàëîñü îòêðûòü\n";
+        std::cerr << "Ð¤Ð°Ð¹Ð» Ð½Ðµ ÑƒÐ´Ð°Ð»Ð¾ÑÑŒ Ð¾Ñ‚ÐºÑ€Ñ‹Ñ‚ÑŒ\n";
         return;
     }
     else {
@@ -505,4 +492,41 @@ void removCustomerByIndex(int index){
             os << container << std::endl;
         }
     }
+}
+
+void swap(Bouquet& a, Bouquet& b) {
+    Bouquet temp = a;
+    a = b;
+    b = temp;
+}
+
+void bubbleSort(std::vector<Bouquet>& obj) {
+    int n = obj.size();
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (obj[j].GetFlowersAmount() > obj[j + 1].GetFlowersAmount()) {
+                swap(obj[j], obj[j + 1]);
+            }
+        }
+    }
+}
+
+void clearFile() {
+    std::ofstream os(fileName, std::ofstream::trunc);
+    os.close();
+}
+
+bool fileEmptyChecker() {
+    std::ifstream is(fileName);
+
+    if (!is.is_open()) {
+        return true;
+    }
+
+    is.seekg(0, std::ios::end);
+    bool isEmpty = (is.tellg() == 0);
+
+    is.close();
+
+    return isEmpty;
 }

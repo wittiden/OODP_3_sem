@@ -6,9 +6,9 @@
 #include "cursor_menu.h"
 #include "cursor_visibility.h"
 #include "input_check.h"
-#include "lab1.h"
-
-//constexpr const int ESC = 27;
+#include "lab1-2.h"
+#include "threads_options.h"
+#include "main_functions.cpp"
 
 enum main_menu_names { LAB_1, LAB_2, MAIN_EXIT };
 enum secondary_menu_names { SHOW_LAB_INFO, LAB_IMPLEMENTATION, BACK_TO_MAIN_MENU, SECONDARY_EXIT };
@@ -17,6 +17,11 @@ int main() {
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
 	hideCursor();
+
+	clearFile();
+
+	//std::thread activity_control(activity_monitor);
+	//activity_control.detach();
 
 	const std::string main_Menu[]{ "1 - Использование потоков ввода/вывода данных", "2 - Использование потоков файлового ввода/вывода данных", "Выход" };
 	const int main_Menu_Count = sizeof(main_Menu) / sizeof(main_Menu[0]);
@@ -27,7 +32,7 @@ int main() {
 
 		switch (main_Menu_choice) {
 		case LAB_1 : {
-			const std::string secondary_Menu[]{ "Получить информацию о задании","Создать заказ на букет","Назад","Выход" };
+			const std::string secondary_Menu[]{ "Получить информацию о задании","Выполнить задание","Назад","Выход" };
 			const int secondary_Menu_Count = sizeof(secondary_Menu) / sizeof(secondary_Menu[0]);
 
 			bool inSecondaryMenu = true;
@@ -41,73 +46,21 @@ int main() {
 					break;
 				}
 				case LAB_IMPLEMENTATION : {
-					showCursor();
+					showLab1Menu();
 
-					int bouquetsize;
-					int idSearch;
-					std::vector<Customer> cstmr;
-					std::vector<Wrapper> wrppr;
-					std::vector<Bouquet> bqt;
-
-					Customer::addCustomer(cstmr);
-
-					std::cout << "\nСколько букетов вам нужно? ";
-					while (true) {
-						std::cin >> bouquetsize;
-						if (!std::cin.bad() && bouquetsize > 0) {
-							break;
-						}
-						std::cin.clear();
-						std::cout << "Неправильный ввод данных\n";
-						std::cin.ignore(10, '\n');
-					}
-
-					for (int i = 0; i < bouquetsize; i++) {
-						Bouquet bouquet;
-						Wrapper wrapper;
-
-						bouquet.addPr();
-						wrapper.addPr();
-
-						bqt.push_back(bouquet);
-						wrppr.push_back(wrapper);
-					}
-
-					for (int i = 0; i < bqt.size(); i++) {
-						bqt[i].showPr();
-						if (i < wrppr.size()) {
-							wrppr[i].showPr();
-						}
-					}
-					Customer::showCustomer(cstmr);
-
-					do {
-						std::cout << "\nПоиск по id букета (введи 0 чтобы выйти): ";
-						while (true) {
-							std::cin >> idSearch;
-							if (std::cin.good() && !std::cin.eof()) {
-								break;
-							}
-							std::cin.clear();
-							std::cout << "Неправильный ввод данных\n";
-							std::cin.ignore(10, '\n');
-						}
-						for (int i = 0; i < bqt.size(); i++) {
-							if (idSearch == bqt[i].GetBouquetId()) {
-								bqt[i].showPr();
-							}
-						}
-					} while (idSearch != 0);
-
-					hideCursor();
-					system("pause");
 					break;
 				}
 				case BACK_TO_MAIN_MENU : {
+					std::cout << "Возвращаемся в предыдущее меню";
+					loadingImitation();
+
 					inSecondaryMenu = false;
 					break;
 				}
 				case SECONDARY_EXIT : {
+					std::cout << "Выходим из программы";
+					loadingImitation();
+
 					return 0;
 				}
 				default:
@@ -117,7 +70,7 @@ int main() {
 			break;
 		}
 		case LAB_2 : {
-			const std::string secondary_Menu[]{ "Получить информацию о задании","Запустить программу по работе с файлами","Назад","Выход" };
+			const std::string secondary_Menu[]{ "Получить информацию о задании", "Выполнить задание", "Назад", "Выход" };
 			const int secondary_Menu_Count = sizeof(secondary_Menu) / sizeof(secondary_Menu[0]);
 
 			bool inSecondaryMenu = true;
@@ -131,85 +84,20 @@ int main() {
 					break;
 				}
 				case LAB_IMPLEMENTATION: {
-					showCursor();
-
-					int bouquetsize;
-					int idSearch;
-					std::vector<Customer> cstmr;
-					std::vector<Wrapper> wrppr;
-					std::vector<Bouquet> bqt;
-
-					Customer::addCustomer(cstmr);
-
-					std::cout << "\nСколько букетов вам нужно? ";
-					while (true) {
-						std::cin >> bouquetsize;
-						if (!std::cin.bad() && bouquetsize > 0) {
-							break;
-						}
-						std::cin.clear();
-						std::cout << "Неправильный ввод данных\n";
-						std::cin.ignore(10, '\n');
-					}
-
-					for (int i = 0; i < bouquetsize; i++) { 
-						Bouquet bouquet;
-						Wrapper wrapper;
-
-						bouquet.addPr();
-						wrapper.addPr();
-
-						bqt.push_back(bouquet);
-						wrppr.push_back(wrapper);
-					}
-
-					for (int i = 0; i < bqt.size(); i++) {
-						bqt[i].showPr();
-						if (i < wrppr.size()) {
-							wrppr[i].showPr();
-						}
-					}
-					Customer::showCustomer(cstmr);
-
-					do {
-						std::cout << "\nПоиск по id букета (введи 0 чтобы выйти): ";
-						while (true) {
-							std::cin >> idSearch;
-							if (std::cin.good() && !std::cin.eof()) {
-								break;
-							}
-							std::cin.clear();
-							std::cout << "Неправильный ввод данных\n";
-							std::cin.ignore(10, '\n');
-						}
-						for (int i = 0; i < bqt.size(); i++) {
-							if (idSearch == bqt[i].GetBouquetId()) {
-								bqt[i].showPr();
-								wrppr[i].showPr();
-							}
-						}
-					} while (idSearch != 0);
-
-					std::cout << "\n\n===! ВЫВОД ИНФОРМАЦИИ ИЗ ФАЙЛА !===\n\n";
-					std::cout << "Пользователи: \n";
-					Customer::showCustomerFileInfo();
-
-					std::cout << "Букеты: \n";
-					Bouquet bouquetFromFileWork;
-					//bouquetFromFileWork.showFileInfo();
-
-					bouquetFromFileWork.removeByIndex(2);
-					bouquetFromFileWork.showFileInfo();
-
-					hideCursor();
-					system("pause");
+					showLab2Menu();
 					break;
 				}
 				case BACK_TO_MAIN_MENU: {
+					std::cout << "Возвращаемся в предыдущее меню";
+					loadingImitation();
+
 					inSecondaryMenu = false;
 					break;
 				}
 				case SECONDARY_EXIT: {
+					std::cout << "Выходим из программы";
+					loadingImitation();
+
 					return 0;
 				}
 				default:
@@ -219,6 +107,9 @@ int main() {
 			break;
 		}
 		case MAIN_EXIT : {
+			std::cout << "Выходим из программы";
+			loadingImitation();
+
 			return 0;
 		}
 		default:
