@@ -9,11 +9,11 @@
 #include "lab1-2.h"
 #include "threads_options.h"
 
-enum Lab1Menu { LAB1_ADD_ORDER, LAB1_DELETE_ORDER, LAB1_SHOW_ALL_ORDERS, LAB1_SEARCH_BY_ID, LAB1_SORT_BY_FLOWERS, LAB1_BACK, LAB1_EXIT };
-enum Lab2Menu { LAB2_ADD_ORDER_TO_FILE, LAB2_DELETE_ORDER, LAB2_SHOW_ALL_ORDERS, LAB2_SEARCH_BY_ID, LAB2_SORT_BY_FLOWERS, LAB2_DELETE_BY_ID_IN_FILE, LAB2_VIEW_FILE_DATA, LAB2_BACK, LAB2_EXIT };
+enum Lab1Menu { LAB1_ADD_ORDER, LAB1_DELETE_ORDER, LAB1_SHOW_ALL_ORDERS, LAB1_SEARCH_BY_ID, LAB1_DELETE_BY_ID, LAB1_SORT_BY_FLOWERS, LAB1_BACK, LAB1_EXIT };
+enum Lab2Menu { LAB2_ADD_ORDER_TO_FILE, LAB2_DELETE_ORDER, LAB2_SHOW_ALL_ORDERS, LAB2_SEARCH_BY_ID, LAB2_DELETE_BY_ID, LAB2_SORT_BY_FLOWERS, LAB2_DELETE_BY_ID_IN_FILE, LAB2_VIEW_FILE_DATA, LAB2_BACK, LAB2_EXIT };
 
 static void showLab1Menu() {
-    const std::string lab1_Menu[]{ "Добавить заказ", "Удалить заказ", "Показать все заказы", "Поиск заказа по id", "Сортировка по количеству цветов", "Назад", "Выйти" };
+    const std::string lab1_Menu[]{ "Добавить заказ", "Удалить заказ", "Показать все заказы", "Поиск заказа по id", "Удалить заказ по id", "Сортировка по количеству цветов", "Назад", "Выйти"};
     const int lab1_Count = sizeof(lab1_Menu) / sizeof(lab1_Menu[0]);
 
     static std::vector<Bouquet> bqt;
@@ -140,6 +140,34 @@ static void showLab1Menu() {
             hideCursor();
             break;
         }
+        case LAB1_DELETE_BY_ID: {
+            if (bqt.empty()) {
+                std::cout << "\nНет созданных заказов!\n";
+                system("pause");
+                break;
+            }
+
+            showCursor();
+            int idSearchForDelete;
+
+            do {
+                std::cout << "\nПоиск по id букета для удаления (введи 0 чтобы выйти): ";
+                while (true) {
+                    std::cin >> idSearchForDelete;
+                    if (std::cin.good() && !std::cin.eof()) {
+                        break;
+                    }
+                    std::cin.clear();
+                    std::cerr << "Неправильный ввод данных\n";
+                    std::cin.ignore(10, '\n');
+                }
+                for (int i = 0; i < bqt.size(); i++) {
+                    if (idSearchForDelete == bqt[i].GetBouquetId()) {
+                        bqt[i].deletePr(bqt, idSearchForDelete);
+                    }
+                }
+            } while (idSearchForDelete != 0);
+        }
         case LAB1_SORT_BY_FLOWERS: {
             if (bqt.empty()) {
                 std::cout << "\nНет созданных заказов на букеты!\n";
@@ -186,7 +214,7 @@ static void showLab1Menu() {
 }
 
 static void showLab2Menu() {
-    const std::string lab2_Menu[]{ "Добавить заказ и записать в файл", "Удалить заказ", "Показать все заказы", "Поиск заказа по id", "Сортировка по количеству цветов", "Удаление по id в файле", "Просмотр данных в файле", "Назад", "Выйти"};
+    const std::string lab2_Menu[]{ "Добавить заказ и записать в файл", "Удалить заказ", "Показать все заказы", "Поиск заказа по id", "Удалить заказ по id", "Сортировка по количеству цветов", "Удаление по id в файле", "Просмотр данных в файле", "Назад", "Выйти"};
     const int lab2_Count = sizeof(lab2_Menu) / sizeof(lab2_Menu[0]);
 
     static std::vector<Bouquet> bqt;
@@ -314,6 +342,34 @@ static void showLab2Menu() {
 
             hideCursor();
             break;
+        }
+        case LAB2_DELETE_BY_ID: {
+            if (bqt.empty()) {
+                std::cout << "\nНет созданных заказов!\n";
+                system("pause");
+                break;
+            }
+
+            showCursor();
+            int idSearchForDelete;
+
+            do {
+                std::cout << "\nПоиск по id букета для удаления (введи 0 чтобы выйти): ";
+                while (true) {
+                    std::cin >> idSearchForDelete;
+                    if (std::cin.good() && !std::cin.eof()) {
+                        break;
+                    }
+                    std::cin.clear();
+                    std::cerr << "Неправильный ввод данных\n";
+                    std::cin.ignore(10, '\n');
+                }
+                for (int i = 0; i < bqt.size(); i++) {
+                    if (idSearchForDelete == bqt[i].GetBouquetId()) {
+                        bqt[i].deletePr(bqt, idSearchForDelete);
+                    }
+                }
+            } while (idSearchForDelete != 0);
         }
         case LAB2_SORT_BY_FLOWERS: {
             if (bqt.empty()) {

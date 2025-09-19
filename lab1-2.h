@@ -47,6 +47,7 @@ public:
     void addToFile() override;
     void showFileInfo();
     void removeByIndex(int index);
+    void deletePr(std::vector<Bouquet>& obj, int  index);
 };
 
 class Wrapper : public Product {
@@ -118,7 +119,7 @@ void Bouquet::addPr() {
     std::cout << "===! СОЗДАНИЕ БУКЕТА !===";
     std::cout.unsetf(std::ios::right);
     std::cout << std::endl;
-
+    // endl = \n + fflush()
     std::cout << "\nВведите количество цветов в букете: ";
     while (true) {
         std::cin >> flowersAmount;
@@ -133,14 +134,14 @@ void Bouquet::addPr() {
     float flowerPrices[]{ 150.0f, 100.0f, 120.0f, 130.0f, 90.0f, 110.0f };
     std::string flowersNames[]{ "Роза", "Тюльпан", "Подсолнух", "Лилия", "Гвоздика", "Гиацинт" };
 
-    for (int i = 0; i < flowersAmount; i++) {
+    for (size_t i = 0; i < flowersAmount; i++) {
         std::cout << "\nВыберите цветок " << i + 1 << " из " << flowersAmount << ":" << std::endl;
         std::cout << "0 - Роза (150 руб.)" << std::endl;
         std::cout << "1 - Тюльпан (100 руб.)" << std::endl;
         std::cout << "2 - Подсолнух (120 руб.)" << std::endl;
         std::cout << "3 - Лилия (130 руб.)" << std::endl;
         std::cout << "4 - Гвоздика (90 руб.)" << std::endl;
-        std::cout << "5 - Гиацинт (110 руб.)" << std::endl;
+        std::cout << "5 - Гиацинт (110 руб.)" << std::endl; 
 
         int choice;
         std::cout << "Ваш выбор: ";
@@ -187,7 +188,7 @@ void Bouquet::showPr() {
     std::cout << "------------------------------------------------------" << std::endl;
     std::cout << "Состав букета:" << std::endl;
 
-    for (int i = 0; i < flowers.size(); i++) {
+    for (size_t i = 0; i < flowers.size(); i++) {
         std::cout << "- " << flowerNames[flowers[i]];
         if (i < flowers.size() - 1) {
             std::cout << std::endl;
@@ -214,7 +215,7 @@ void Bouquet::addToFile() {
         std::string flowerNames_[] = { "Rose", "tulip", "sunflower", "lily", "carnation", "hyacint" };
 
         os << "compound: ";
-        for (int i = 0; i < flowers.size(); i++) {
+        for (size_t i = 0; i < flowers.size(); i++) {
             os << flowerNames_[flowers[i]];
             if (i < flowers.size() - 1) {
                 os << ", ";
@@ -502,8 +503,8 @@ void swap(Bouquet& a, Bouquet& b) {
 
 void bubbleSort(std::vector<Bouquet>& obj) {
     int n = obj.size();
-    for (int i = 0; i < n - 1; i++) {
-        for (int j = 0; j < n - i - 1; j++) {
+    for (size_t i = 0; i < n - 1; i++) {
+        for (size_t j = 0; j < n - i - 1; j++) {
             if (obj[j].GetFlowersAmount() > obj[j + 1].GetFlowersAmount()) {
                 swap(obj[j], obj[j + 1]);
             }
@@ -529,4 +530,35 @@ bool fileEmptyChecker() {
     is.close();
 
     return isEmpty;
+}
+
+void Bouquet::deletePr(std::vector<Bouquet>& obj, int index) {
+    std::ios::fmtflags originalFlags = std::cout.flags();
+
+    std::cout << "\n\n\n";
+
+    std::cout << "                      БУКЕТ #" << GetBouquetId() << std::endl;
+    std::cout << "======================================================" << std::endl;
+
+    std::cout << "Количество цветов: " << GetFlowersAmount() << std::endl;
+    std::cout << "Стоимость:        " << GetCost() << " руб." << std::endl;
+
+    std::string flowerNames[] = { "Роза", "Тюльпан", "Подсолнух", "Лилия", "Гвоздика", "Гиацинт" };
+
+    std::cout << "------------------------------------------------------" << std::endl;
+    std::cout << "Состав букета:" << std::endl;
+
+    for (size_t i = 0; i < flowers.size(); i++) {
+        std::cout << "- " << flowerNames[flowers[i]];
+        if (i < flowers.size() - 1) {
+            std::cout << std::endl;
+        }
+    }
+    std::cout << std::endl;
+    std::cout << "======================================================" << std::endl;
+
+    std::cout.flags(originalFlags);
+
+    obj.erase(obj.begin() + index-1);
+
 }
