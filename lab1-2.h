@@ -352,8 +352,7 @@ void Customer::addCustomer(std::vector<Customer>& obj) {
     std::cout.setf(std::ios::right);
     std::cout.width(40);
     std::cout << "===! ДОБАВЛЕНИЕ ДАННЫХ КЛИЕНТА !===";
-    std::cout.unsetf(std::ios::right);
-    std::cout << std::endl;
+    std::cout.unsetf(std::ios::right);    
 
     std::cout << "\nВведите имя: ";
     letter_filteredInput<std::string>(name, 0, 1);
@@ -435,7 +434,7 @@ void Customer::showCustomerFileInfo() {
     }
     else {
         bool mySelection = false;
-
+          
         while (!is.eof()) {
             std::string line;
             line = "";
