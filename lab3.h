@@ -210,11 +210,10 @@ public:
 
     void AddInf(std::string type) override {
         if (type == "array") {
-            int add_choice;
-            int students_to_add;
+            unsigned add_choice;
+            unsigned students_to_add;
             std::cout << "Введите количество студентов, которое вы хотите добавить: ";
-            std::cin >> students_to_add;
-            std::cin.ignore();
+            number_filteredInput<unsigned>(students_to_add);
 
             if (students_array == nullptr) {
                 students_array = new bsuir[0];
@@ -236,8 +235,7 @@ public:
                 std::cout << "3 - Добавить по индексу\n";
 
                 std::cout << "Номер действия: ";
-                std::cin >> add_choice;
-                std::cin.ignore();
+                number_filteredInput<unsigned>(add_choice);
 
                 if (add_choice == 1) {
                     push_up(students_array, student_array_size, newStudent);
@@ -248,10 +246,9 @@ public:
                     std::cout << "Студент добавлен в конец массива!\n";
                 }
                 else if (add_choice == 3) {
-                    int index;
+                    unsigned index;
                     std::cout << "Введите индекс для добавления (0-" << student_array_size << "): ";
-                    std::cin >> index;
-                    std::cin.ignore();
+                    number_filteredInput<unsigned>(index);
                     if (index >= 0 && index <= student_array_size) {
                         insert(students_array, student_array_size, newStudent, index);
                         std::cout << "Студент добавлен на позицию " << index << "!\n";
@@ -272,8 +269,8 @@ public:
             system("pause");
         }
         else if (type == "vector") {
-            int add_choice;
-            int add_final_choice;
+            unsigned add_choice;
+            unsigned add_final_choice;
 
             do {
                 std::cout << "=== ДОБАВЛЕНИЕ СТУДЕНТА (VECTOR) ===\n";
@@ -290,8 +287,7 @@ public:
                 std::cout << "3 - Добавить по индексу\n";
 
                 std::cout << "Номер действия: ";
-                std::cin >> add_choice;
-                std::cin.ignore();
+                number_filteredInput<unsigned>(add_choice);
 
                 if (add_choice == 1) {
                     students_vector.insert(students_vector.begin(), newStudent);
@@ -302,10 +298,10 @@ public:
                     std::cout << "Студент добавлен в конец вектора!\n";
                 }
                 else if (add_choice == 3) {
-                    int index;
+                    unsigned index;
                     std::cout << "Введите индекс для добавления (0-" << students_vector.size() << "): ";
-                    std::cin >> index;
-                    std::cin.ignore();
+                    number_filteredInput<unsigned>(index);
+
                     if (index >= 0 && index <= students_vector.size()) {
                         students_vector.insert(students_vector.begin() + index, newStudent);
                         std::cout << "Студент добавлен на позицию " << index << "!\n";
@@ -327,8 +323,7 @@ public:
                     std::cout << "3 - Выйти\n";
 
                     std::cout << "Номер действия: ";
-                    std::cin >> add_final_choice;
-                    std::cin.ignore();
+                    number_filteredInput<unsigned>(add_final_choice);
                     std::cout << std::endl;
 
                     if (add_final_choice == 1) {
@@ -345,8 +340,8 @@ public:
             } while (add_final_choice != 3);
         }
         else if (type == "list") {
-            int add_choice;
-            int add_final_choice;
+            unsigned add_choice;
+            unsigned add_final_choice;
 
             do {
                 std::cout << "=== ДОБАВЛЕНИЕ СТУДЕНТА (LIST) ===\n";
@@ -363,8 +358,7 @@ public:
                 std::cout << "3 - Добавить по индексу\n";
 
                 std::cout << "Номер действия: ";
-                std::cin >> add_choice;
-                std::cin.ignore();
+                number_filteredInput<unsigned>(add_choice);
 
                 if (add_choice == 1) {
                     students_list.push_front(newStudent);
@@ -375,10 +369,9 @@ public:
                     std::cout << "Студент добавлен в конец списка!\n";
                 }
                 else if (add_choice == 3) {
-                    int index;
+                    unsigned index;
                     std::cout << "Введите индекс для добавления (0-" << students_list.GetSize() << "): ";
-                    std::cin >> index;
-                    std::cin.ignore();
+                    number_filteredInput<unsigned>(index);
                     if (index >= 0 && index <= students_list.GetSize()) {
                         students_list.insert(newStudent, index);
                         std::cout << "Студент добавлен на позицию " << index << "!\n";
@@ -400,8 +393,7 @@ public:
                     std::cout << "3 - Выйти\n";
 
                     std::cout << "Номер действия: ";
-                    std::cin >> add_final_choice;
-                    std::cin.ignore();
+                    number_filteredInput<unsigned>(add_final_choice);
                     std::cout << std::endl;
 
                     if (add_final_choice == 1) {
@@ -423,8 +415,8 @@ public:
         if (type == "array") {
             if (student_array_size == 0) return;
 
-            int del_choice;
-            int del_final_choice;
+            unsigned del_choice;
+            unsigned del_final_choice;
 
             do {
                 std::cout << "=== УДАЛЕНИЕ СТУДЕНТА (ARRAY) ===\n";
@@ -436,8 +428,7 @@ public:
                 std::cout << "3 - Удалить по индексу\n";
 
                 std::cout << "Номер действия: ";
-                std::cin >> del_choice;
-                std::cin.ignore();
+                number_filteredInput<unsigned>(del_choice);
 
                 if (del_choice == 1) {
                     pop_up(students_array, student_array_size);
@@ -448,10 +439,9 @@ public:
                     std::cout << "Студент удален из конца массива!\n";
                 }
                 else if (del_choice == 3) {
-                    int index;
+                    unsigned index;
                     std::cout << "Введите индекс для удаления (0-" << student_array_size - 1 << "): ";
-                    std::cin >> index;
-                    std::cin.ignore();
+                    number_filteredInput<unsigned>(index);
                     if (index >= 0 && index < student_array_size) {
                         erase(students_array, student_array_size, index);
                         std::cout << "Студент удален с позиции " << index << "!\n";
@@ -477,9 +467,7 @@ public:
                         std::cout << "2 - Выйти\n";
 
                         std::cout << "Номер действия: ";
-                        std::cin >> del_final_choice;
-                        std::cin.ignore();
-                        std::cout << std::endl;
+                        number_filteredInput<unsigned>(del_final_choice);
 
                         if (del_final_choice == 1) {
                             break;
@@ -494,8 +482,8 @@ public:
         else if (type == "vector") {
             if (students_vector.empty()) return;
 
-            int del_choice;
-            int del_final_choice;
+            unsigned del_choice;
+            unsigned del_final_choice;
 
             do {
                 std::cout << "=== УДАЛЕНИЕ СТУДЕНТА (VECTOR) ===\n";
@@ -507,8 +495,7 @@ public:
                 std::cout << "3 - Удалить по индексу\n";
 
                 std::cout << "Номер действия: ";
-                std::cin >> del_choice;
-                std::cin.ignore();
+                number_filteredInput<unsigned>(del_choice);
 
                 if (del_choice == 1) {
                     students_vector.erase(students_vector.begin());
@@ -519,10 +506,9 @@ public:
                     std::cout << "Студент удален из конца вектора!\n";
                 }
                 else if (del_choice == 3) {
-                    int index;
+                    unsigned index;
                     std::cout << "Введите индекс для удаления (0-" << students_vector.size() - 1 << "): ";
-                    std::cin >> index;
-                    std::cin.ignore();
+                    number_filteredInput<unsigned>(index);
                     if (index >= 0 && index < students_vector.size()) {
                         students_vector.erase(students_vector.begin() + index);
                         std::cout << "Студент удален с позиции " << index << "!\n";
@@ -544,8 +530,7 @@ public:
                         std::cout << "2 - Выйти\n";
 
                         std::cout << "Номер действия: ";
-                        std::cin >> del_final_choice;
-                        std::cin.ignore();
+                        number_filteredInput<unsigned>(del_final_choice);
                         std::cout << std::endl;
 
                         if (del_final_choice == 1) {
@@ -561,8 +546,8 @@ public:
         else if (type == "list") {
             if (students_list.GetSize() == 0) return;
 
-            int del_choice;
-            int del_final_choice;
+            unsigned del_choice;
+            unsigned del_final_choice;
 
             do {
                 std::cout << "=== УДАЛЕНИЕ СТУДЕНТА (LIST) ===\n";
@@ -574,8 +559,7 @@ public:
                 std::cout << "3 - Удалить по индексу\n";
 
                 std::cout << "Номер действия: ";
-                std::cin >> del_choice;
-                std::cin.ignore();
+                number_filteredInput<unsigned>(del_choice);
 
                 if (del_choice == 1) {
                     students_list.pop_front();
@@ -586,10 +570,9 @@ public:
                     std::cout << "Студент удален из конца списка!\n";
                 }
                 else if (del_choice == 3) {
-                    int index;
+                    unsigned index;
                     std::cout << "Введите индекс для удаления (0-" << students_list.GetSize() - 1 << "): ";
-                    std::cin >> index;
-                    std::cin.ignore();
+                    number_filteredInput<unsigned>(index);
                     if (index >= 0 && index < students_list.GetSize()) {
                         students_list.removeAt(index);
                         std::cout << "Студент удален с позиции " << index << "!\n";
@@ -611,8 +594,7 @@ public:
                         std::cout << "2 - Выйти\n";
 
                         std::cout << "Номер действия: ";
-                        std::cin >> del_final_choice;
-                        std::cin.ignore();
+                        number_filteredInput<unsigned>(del_final_choice);
                         std::cout << std::endl;
 
                         if (del_final_choice == 1) {
@@ -631,16 +613,15 @@ public:
         if (type == "array") {
             if (student_array_size == 0) return;
 
-            int change_id;
-            int change_final_choice;
+            unsigned change_id;
+            unsigned change_final_choice;
 
             do {
                 std::cout << "=== ИЗМЕНЕНИЕ ДАННЫХ СТУДЕНТА (ARRAY) ===\n";
                 ShowInf("array");
 
                 std::cout << "Введите ID студента: ";
-                std::cin >> change_id;
-                std::cin.ignore();
+                number_filteredInput<unsigned>(change_id);
 
                 int found_index = -1;
                 for (int i = 0; i < student_array_size; i++) {
@@ -672,8 +653,7 @@ public:
                     std::cout << "2 - Выйти\n";
 
                     std::cout << "Номер действия: ";
-                    std::cin >> change_final_choice;
-                    std::cin.ignore();
+                    number_filteredInput<unsigned>(change_final_choice);
 
                     if (change_final_choice == 1 || change_final_choice == 2) {
                         break;
@@ -685,16 +665,15 @@ public:
         else if (type == "vector") {
             if (students_vector.empty()) return;
 
-            int change_id;
-            int change_final_choice;
+            unsigned change_id;
+            unsigned change_final_choice;
 
             do {
                 std::cout << "=== ИЗМЕНЕНИЕ ДАННЫХ СТУДЕНТА (VECTOR) ===\n";
                 ShowInf("vector");
 
                 std::cout << "Введите ID студента: ";
-                std::cin >> change_id;
-                std::cin.ignore();
+                number_filteredInput<unsigned>(change_id);
 
                 int found_index = -1;
                 for (size_t i = 0; i < students_vector.size(); i++) {
@@ -726,8 +705,7 @@ public:
                     std::cout << "2 - Выйти\n";
 
                     std::cout << "Номер действия: ";
-                    std::cin >> change_final_choice;
-                    std::cin.ignore();
+                    number_filteredInput<unsigned>(change_final_choice);
 
                     if (change_final_choice == 1 || change_final_choice == 2) {
                         break;
@@ -739,16 +717,15 @@ public:
         else if (type == "list") {
             if (students_list.GetSize() == 0) return;
 
-            int change_id;
-            int change_final_choice;
+            unsigned change_id;
+            unsigned change_final_choice;
 
             do {
                 std::cout << "=== ИЗМЕНЕНИЕ ДАННЫХ СТУДЕНТА (LIST) ===\n";
                 ShowInf("list");
 
                 std::cout << "Введите ID студента: ";
-                std::cin >> change_id;
-                std::cin.ignore();
+                number_filteredInput<unsigned>(change_id);
 
                 int found_index = -1;
                 for (int i = 0; i < students_list.GetSize(); i++) {
@@ -780,8 +757,7 @@ public:
                     std::cout << "2 - Выйти\n";
 
                     std::cout << "Номер действия: ";
-                    std::cin >> change_final_choice;
-                    std::cin.ignore();
+                    number_filteredInput<unsigned>(change_final_choice);
 
                     if (change_final_choice == 1 || change_final_choice == 2) {
                         break;
@@ -824,13 +800,12 @@ public:
         if (type == "array") {
             if (student_array_size < 2) { return; }
 
-            int sort_choice;
+            unsigned sort_choice;
             std::cout << "=== СОРТИРОВКА СТУДЕНТОВ (" << type << ") ===\n";
             std::cout << "1 - По возрастанию ID\n";
             std::cout << "2 - По убыванию ID\n";
             std::cout << "Выберите тип сортировки: ";
-            std::cin >> sort_choice;
-            std::cin.ignore();
+            number_filteredInput<unsigned>(sort_choice);
 
             bsuir* sorted_array = new bsuir[student_array_size];
             for (int i = 0; i < student_array_size; i++) {
@@ -866,13 +841,12 @@ public:
         else if (type == "vector") {
             if (students_vector.size() < 2) { return; }
 
-            int sort_choice;
+            unsigned sort_choice;
             std::cout << "=== СОРТИРОВКА СТУДЕНТОВ (" << type << ") ===\n";
             std::cout << "1 - По возрастанию ID\n";
             std::cout << "2 - По убыванию ID\n";
             std::cout << "Выберите тип сортировки: ";
-            std::cin >> sort_choice;
-            std::cin.ignore();
+            number_filteredInput<unsigned>(sort_choice);
 
             std::vector<bsuir> sorted_vector = students_vector;
             if (sort_choice == 1) {
@@ -905,13 +879,12 @@ public:
         else if (type == "list") {
             if (students_list.GetSize() < 2) { return; }
 
-            int sort_choice;
+            unsigned sort_choice;
             std::cout << "=== СОРТИРОВКА СТУДЕНТОВ (" << type << ") ===\n";
             std::cout << "1 - По возрастанию ID\n";
             std::cout << "2 - По убыванию ID\n";
             std::cout << "Выберите тип сортировки: ";
-            std::cin >> sort_choice;
-            std::cin.ignore();
+            number_filteredInput<unsigned>(sort_choice);
 
             MyList<bsuir> sorted_list;
             for (int i = 0; i < students_list.GetSize(); i++) {
@@ -949,10 +922,9 @@ public:
             if (student_array_size == 0) return;
             std::cout << "\n=== ПОИСК СТУДЕНТОВ ===\n";
 
-            int search_id;
+            unsigned search_id;
             std::cout << "Введите ID студента для поиска: ";
-            std::cin >> search_id;
-            std::cin.ignore();
+            number_filteredInput<unsigned>(search_id);
 
             bool found = false;
             for (int i = 0; i < student_array_size; i++) {
@@ -972,10 +944,9 @@ public:
             if (students_vector.empty()) return;
             std::cout << "\n=== ПОИСК СТУДЕНТОВ ===\n";
 
-            int search_id;
+            unsigned search_id;
             std::cout << "Введите ID студента для поиска: ";
-            std::cin >> search_id;
-            std::cin.ignore();
+            number_filteredInput<unsigned>(search_id);
 
             bool found = false;
             for (size_t i = 0; i < students_vector.size(); i++) {
@@ -995,10 +966,9 @@ public:
             if (students_list.GetSize() == 0) return;
             std::cout << "\n=== ПОИСК СТУДЕНТОВ ===\n";
 
-            int search_id;
+            unsigned search_id;
             std::cout << "Введите ID студента для поиска: ";
-            std::cin >> search_id;
-            std::cin.ignore();
+            number_filteredInput<unsigned>(search_id);
 
             bool found = false;
             for (int i = 0; i < students_list.GetSize(); i++) {
@@ -1024,14 +994,13 @@ public:
             if (student_array_size == 0) return;
             std::cout << "\n=== ФИЛЬТРАЦИЯ СТУДЕНТОВ ===\n";
 
-            int field_choice;
+            unsigned field_choice;
             std::cout << "Выберите поле для фильтрации:\n";
             std::cout << "1 - ФИО\n";
             std::cout << "2 - Факультет\n";
             std::cout << "3 - Специальность\n";
             std::cout << "Номер действия: ";
-            std::cin >> field_choice;
-            std::cin.ignore();
+            number_filteredInput<unsigned>(field_choice);
 
             std::string filter_value;
             std::cout << "Введите значение для фильтрации: ";
@@ -1065,14 +1034,13 @@ public:
             if (students_vector.empty()) return;
             std::cout << "\n=== ФИЛЬТРАЦИЯ СТУДЕНТОВ ===\n";
 
-            int field_choice;
+            unsigned field_choice;
             std::cout << "Выберите поле для фильтрации:\n";
             std::cout << "1 - ФИО\n";
             std::cout << "2 - Факультет\n";
             std::cout << "3 - Специальность\n";
             std::cout << "Номер действия: ";
-            std::cin >> field_choice;
-            std::cin.ignore();
+            number_filteredInput<unsigned>(field_choice);
 
             std::string filter_value;
             std::cout << "Введите значение для фильтрации: ";
@@ -1106,14 +1074,13 @@ public:
             if (students_list.GetSize() == 0) return;
             std::cout << "\n=== ФИЛЬТРАЦИЯ СТУДЕНТОВ ===\n";
 
-            int field_choice;
+            unsigned field_choice;
             std::cout << "Выберите поле для фильтрации:\n";
             std::cout << "1 - ФИО\n";
             std::cout << "2 - Факультет\n";
             std::cout << "3 - Специальность\n";
             std::cout << "Номер действия: ";
-            std::cin >> field_choice;
-            std::cin.ignore();
+            number_filteredInput<unsigned>(field_choice);
 
             std::string filter_value;
             std::cout << "Введите значение для фильтрации: ";

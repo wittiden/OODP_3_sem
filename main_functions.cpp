@@ -683,3 +683,39 @@ static void showLab3Secondary_LIST_Menu() {
         }
     }
 }
+
+static void showLab4Menu() {
+    const std::string lab4_Menu[]{ "", "Назад", "Выйти" };
+    const int lab4_Count = sizeof(lab4_Menu) / sizeof(lab4_Menu[0]);
+
+    bool inLab3Menu = true;
+    while (inLab3Menu) {
+        int lab1_choice = main_showMenu("Лабораторная работа 3", lab4_Menu, lab4_Count);
+
+        switch (lab1_choice) {
+        case LAB3_VECTOR: {
+            showLab3Secondary_VECTOR_Menu();
+            break;
+        }
+        case LAB3_LIST: {
+            showLab3Secondary_LIST_Menu();
+            break;
+        }
+        case LAB3_ARRAY: {
+            showLab3Secondary_ARRAY_Menu();
+            break;
+        }
+        case LAB3_BACK: {
+            inLab3Menu = false;
+            break;
+        }
+        case LAB3_EXIT: {
+            std::cout << "Выходим из программы";
+            loadingImitation();
+            exit(0);
+        }
+        default:
+            break;
+        }
+    }
+}
