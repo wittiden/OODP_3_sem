@@ -6,8 +6,8 @@
 
 #include "cursor_menu.h"
 #include "cursor_visibility.h"
-#include "lab1-2.h"
 #include "threads_options.h"
+#include "lab1-2.h"
 
 enum Lab1Menu { LAB1_ADD_ORDER, LAB1_DELETE_ORDER, LAB1_SHOW_ALL_ORDERS, LAB1_SEARCH_BY_ID, LAB1_DELETE_BY_ID, LAB1_SORT_BY_FLOWERS, LAB1_BACK, LAB1_EXIT };
 enum Lab2Menu { LAB2_ADD_ORDER_TO_FILE, LAB2_DELETE_ORDER, LAB2_SHOW_ALL_ORDERS, LAB2_SEARCH_BY_ID, LAB2_DELETE_BY_ID, LAB2_SORT_BY_FLOWERS, LAB2_DELETE_BY_ID_IN_FILE, LAB2_VIEW_FILE_DATA, LAB2_BACK, LAB2_EXIT };
@@ -684,32 +684,556 @@ static void showLab3Secondary_LIST_Menu() {
     }
 }
 
+////////////////////////////4_LAB//////////////////////////////////////////////
+
+enum Lab4Menu { LAB4_SET, LAB4_MULTISET, LAB4_MAP, LAB4_MULTIMAP, LAB4_UNORDERED_MAP, LAB4_BACK, LAB4_EXIT };
+void showLab4Secondary_SET_Menu();
+void showLab4Secondary_MULTISET_Menu();
+void showLab4Secondary_MAP_Menu();
+void showLab4Secondary_MULTIMAP_Menu();
+void showLab4Secondary_UNORDERED_MAP_Menu();
+
 static void showLab4Menu() {
-    const std::string lab4_Menu[]{ "", "Назад", "Выйти" };
+    const std::string lab4_Menu[]{ "set", "multiset", "map", "multimap", "unordered_map", "Назад", "Выйти"};
     const int lab4_Count = sizeof(lab4_Menu) / sizeof(lab4_Menu[0]);
 
-    bool inLab3Menu = true;
-    while (inLab3Menu) {
-        int lab1_choice = main_showMenu("Лабораторная работа 3", lab4_Menu, lab4_Count);
+    bool inLab4Menu = true;
+    while (inLab4Menu) {
+        int lab1_choice = main_showMenu("Лабораторная работа 4", lab4_Menu, lab4_Count);
 
         switch (lab1_choice) {
-        case LAB3_VECTOR: {
-            showLab3Secondary_VECTOR_Menu();
+        case LAB4_SET: {
+            showLab4Secondary_SET_Menu();
             break;
         }
-        case LAB3_LIST: {
-            showLab3Secondary_LIST_Menu();
+        case LAB4_MULTISET: {
+            showLab4Secondary_MULTISET_Menu();
             break;
         }
-        case LAB3_ARRAY: {
-            showLab3Secondary_ARRAY_Menu();
+        case LAB4_MAP: {
+            showLab4Secondary_MAP_Menu();
             break;
         }
-        case LAB3_BACK: {
-            inLab3Menu = false;
+        case LAB4_MULTIMAP: {
+            showLab4Secondary_MULTIMAP_Menu();
             break;
         }
-        case LAB3_EXIT: {
+        case LAB4_UNORDERED_MAP: {
+            showLab4Secondary_UNORDERED_MAP_Menu();
+            break;
+        }
+        case LAB4_BACK: {
+            inLab4Menu = false;
+            break;
+        }
+        case LAB4_EXIT: {
+            std::cout << "Выходим из программы";
+            loadingImitation();
+            exit(0);
+        }
+        default:
+            break;
+        }
+    }
+}
+
+static void showLab4Secondary_SET_Menu() {
+    const std::string lab4Secondary_SET_Menu[]{ "Добавить", "Удалить", "Редактировать", "Поиск", "Сортировка", "Фильтрация", "Назад", "Выйти" };
+    const int lab4Secondary_SET_Count = sizeof(lab4Secondary_SET_Menu) / sizeof(lab4Secondary_SET_Menu[0]);
+
+    bsuir st;
+
+    bool inLab4Secondary_SET_Menu = true;
+    while (inLab4Secondary_SET_Menu) {
+        int lab4_choice = main_showMenu("Лабораторная работа 4 (SET)", lab4Secondary_SET_Menu, lab4Secondary_SET_Count);
+
+        switch (lab4_choice) {
+        case LAB3_ADD_INFO: {
+
+            st.AddInf("set");
+            break;
+        }
+        case LAB3_DELETE_INFO: {
+
+            st.DeleteInf("set");
+            break;
+        }
+        case LAB3_CHANGE_INFO: {
+
+            std::cout << "В контейнере set нельзя менять значения!\n";
+            system("pause");
+            break;
+        }
+        case LAB3_FIND_INFO: {
+
+            st.SearchInf("set");
+            break;
+        }
+        case LAB3_SORT_INFO: {
+
+            st.ShowInf("set");
+            break;
+        }
+        case LAB3_FILTER_INFO: {
+            st.FilterInf("set");
+            break;
+        }
+        case LAB3_CONTAINER_BACK: {
+            inLab4Secondary_SET_Menu = false;
+            break;
+        }
+        case LAB3_CONTAINER_EXIT: {
+            std::cout << "Выходим из программы";
+            loadingImitation();
+            exit(0);
+        }
+        default:
+            break;
+        }
+    }
+}
+static void showLab4Secondary_MULTISET_Menu() {
+    const std::string lab4Secondary_MULTISET_Menu[]{ "Добавить", "Удалить", "Редактировать", "Поиск", "Сортировка", "Фильтрация", "Назад", "Выйти" };
+    const int lab4Secondary_MULTISET_Count = sizeof(lab4Secondary_MULTISET_Menu) / sizeof(lab4Secondary_MULTISET_Menu[0]);
+
+    bsuir st;
+
+    bool inLab4Secondary_MULTISET_Menu = true;
+    while (inLab4Secondary_MULTISET_Menu) {
+        int lab4_choice = main_showMenu("Лабораторная работа 4 (MULTISET)", lab4Secondary_MULTISET_Menu, lab4Secondary_MULTISET_Count);
+
+        switch (lab4_choice) {
+        case LAB3_ADD_INFO: {
+
+            st.AddInf("multiset");
+            break;
+        }
+        case LAB3_DELETE_INFO: {
+
+            st.DeleteInf("multiset");
+            break;
+        }
+        case LAB3_CHANGE_INFO: {
+
+            std::cout << "В контейнере multiset нельзя менять значения!\n";
+            system("pause");
+            break;
+        }
+        case LAB3_FIND_INFO: {
+
+            st.SearchInf("multiset");
+            break;
+        }
+        case LAB3_SORT_INFO: {
+
+            st.ShowInf("multiset");
+            break;
+        }
+        case LAB3_FILTER_INFO: {
+            st.FilterInf("multiset");
+            break;
+        }
+        case LAB3_CONTAINER_BACK: {
+            inLab4Secondary_MULTISET_Menu = false;
+            break;
+        }
+        case LAB3_CONTAINER_EXIT: {
+            std::cout << "Выходим из программы";
+            loadingImitation();
+            exit(0);
+        }
+        default:
+            break;
+        }
+    }
+}
+static void showLab4Secondary_MAP_Menu() {
+    const std::string lab4Secondary_MAP_Menu[]{ "Добавить", "Удалить", "Редактировать", "Поиск", "Сортировка", "Фильтрация", "Назад", "Выйти" };
+    const int lab4Secondary_MAP_Count = sizeof(lab4Secondary_MAP_Menu) / sizeof(lab4Secondary_MAP_Menu[0]);
+
+    bsuir st;
+
+    bool inLab4Secondary_MAP_Menu = true;
+    while (inLab4Secondary_MAP_Menu) {
+        int lab4_choice = main_showMenu("Лабораторная работа 4 (map)", lab4Secondary_MAP_Menu, lab4Secondary_MAP_Count);
+
+        switch (lab4_choice) {
+        case LAB3_ADD_INFO: {
+
+            st.AddInf("map");
+            break;
+        }
+        case LAB3_DELETE_INFO: {
+
+            st.DeleteInf("map");
+            break;
+        }
+        case LAB3_CHANGE_INFO: {
+
+            st.ChangeInf("map");
+            break;
+        }
+        case LAB3_FIND_INFO: {
+
+            st.SearchInf("map");
+            break;
+        }
+        case LAB3_SORT_INFO: {
+
+            st.ShowInf("map");
+            break;
+        }
+        case LAB3_FILTER_INFO: {
+            st.FilterInf("map");
+            break;
+        }
+        case LAB3_CONTAINER_BACK: {
+            inLab4Secondary_MAP_Menu = false;
+            break;
+        }
+        case LAB3_CONTAINER_EXIT: {
+            std::cout << "Выходим из программы";
+            loadingImitation();
+            exit(0);
+        }
+        default:
+            break;
+        }
+    }
+}
+static void showLab4Secondary_MULTIMAP_Menu() {
+    const std::string lab4Secondary_MULTIMAP_Menu[]{ "Добавить", "Удалить", "Редактировать", "Поиск", "Сортировка", "Фильтрация", "Назад", "Выйти" };
+    const int lab4Secondary_MULTIMAP_Count = sizeof(lab4Secondary_MULTIMAP_Menu) / sizeof(lab4Secondary_MULTIMAP_Menu[0]);
+
+    bsuir st;
+
+    bool inLab4Secondary_MULTIMAP_Menu = true;
+    while (inLab4Secondary_MULTIMAP_Menu) {
+        int lab4_choice = main_showMenu("Лабораторная работа 4 (multimap)", lab4Secondary_MULTIMAP_Menu, lab4Secondary_MULTIMAP_Count);
+
+        switch (lab4_choice) {
+        case LAB3_ADD_INFO: {
+
+            st.AddInf("multimap");
+            break;
+        }
+        case LAB3_DELETE_INFO: {
+
+            st.DeleteInf("multimap");
+            break;
+        }
+        case LAB3_CHANGE_INFO: {
+
+            st.ChangeInf("multimap");
+            break;
+        }
+        case LAB3_FIND_INFO: {
+
+            st.SearchInf("multimap");
+            break;
+        }
+        case LAB3_SORT_INFO: {
+
+            st.ShowInf("multimap");
+            break;
+        }
+        case LAB3_FILTER_INFO: {
+            st.FilterInf("multimap");
+            break;
+        }
+        case LAB3_CONTAINER_BACK: {
+            inLab4Secondary_MULTIMAP_Menu = false;
+            break;
+        }
+        case LAB3_CONTAINER_EXIT: {
+            std::cout << "Выходим из программы";
+            loadingImitation();
+            exit(0);
+        }
+        default:
+            break;
+        }
+    }
+}
+static void showLab4Secondary_UNORDERED_MAP_Menu() {
+    const std::string lab4Secondary_UNORDEDRED_MAP_Menu[]{ "Добавить", "Удалить", "Редактировать", "Поиск", "Сортировка", "Фильтрация", "Назад", "Выйти" };
+    const int lab4Secondary_UNORDERED_MAP_Count = sizeof(lab4Secondary_UNORDEDRED_MAP_Menu) / sizeof(lab4Secondary_UNORDEDRED_MAP_Menu[0]);
+
+    bsuir st;
+
+    bool inLab4Secondary_UNORDEDRED_MAP_Menu = true;
+    while (inLab4Secondary_UNORDEDRED_MAP_Menu) {
+        int lab4_choice = main_showMenu("Лабораторная работа 4 (unordered_map)", lab4Secondary_UNORDEDRED_MAP_Menu, lab4Secondary_UNORDERED_MAP_Count);
+
+        switch (lab4_choice) {
+        case LAB3_ADD_INFO: {
+
+            st.AddInf("unordered_map");
+            break;
+        }
+        case LAB3_DELETE_INFO: {
+
+            st.DeleteInf("unordered_map");
+            break;
+        }
+        case LAB3_CHANGE_INFO: {
+
+            st.ChangeInf("unordered_map");
+            break;
+        }
+        case LAB3_FIND_INFO: {
+
+            st.SearchInf("unordered_map");
+            break;
+        }
+        case LAB3_SORT_INFO: {
+
+            st.ShowInf("unordered_map");
+            system("pause");
+            break;
+        }
+        case LAB3_FILTER_INFO: {
+            st.FilterInf("unordered_map");
+            break;
+        }
+        case LAB3_CONTAINER_BACK: {
+            inLab4Secondary_UNORDEDRED_MAP_Menu = false;
+            break;
+        }
+        case LAB3_CONTAINER_EXIT: {
+            std::cout << "Выходим из программы";
+            loadingImitation();
+            exit(0);
+        }
+        default:
+            break;
+        }
+    }
+}
+
+
+////////////////////////////5_LAB//////////////////////////////////////////////
+
+enum Lab5Menu { LAB5_QUEUE, LAB5_STACK, LAB5_PRIORITY_QUEUE, LAB5_BACK, LAB5_EXIT };
+enum LAB5_CASE_MENU { LAB5_ADD_INFO, LAB5_DELETE_INFO, LAB5_CHANGE_INFO, LAB5_FIND_INFO, LAB5_SORT_INFO, LAB5_FILTER_INFO, LAB5_ADD_TO_FILE, LAB5_SHOW_FROM_FILE, LAB5_CONTAINER_BACK, LAB5_CONTAINER_EXIT };
+
+void showLab5Secondary_QUEUE_Menu();
+void showLab5Secondary_STACK_Menu();
+void showLab5Secondary_PRIORITY_QUEUE_Menu();
+
+static void showLab5Menu() {
+    const std::string lab5_Menu[]{ "queue", "stack", "priority_queue", "Назад", "Выйти" };
+    const int lab5_Count = sizeof(lab5_Menu) / sizeof(lab5_Menu[0]);
+
+    bool inLab5Menu = true;
+    while (inLab5Menu) {
+        int lab1_choice = main_showMenu("5 - Контейнеры queue, stack, priority_queue", lab5_Menu, lab5_Count);
+
+        switch (lab1_choice) {
+        case LAB5_QUEUE: {
+            showLab5Secondary_QUEUE_Menu();
+            break;
+        }
+        case LAB5_STACK: {
+            showLab5Secondary_STACK_Menu();
+            break;
+        }
+        case LAB5_PRIORITY_QUEUE: {
+            showLab5Secondary_PRIORITY_QUEUE_Menu();
+            break;
+        }
+        case LAB5_BACK: {
+            inLab5Menu = false;
+            break;
+        }
+        case LAB5_EXIT: {
+            std::cout << "Выходим из программы";
+            loadingImitation();
+            exit(0);
+        }
+        default:
+            break;
+        }
+    }
+}
+
+static void showLab5Secondary_QUEUE_Menu() {
+    const std::string lab5Secondary_QUEUE_Menu[]{ "Добавить", "Удалить", "Редактировать", "Поиск", "Сортировка", "Фильтрация", "Добавить в файл", "Вывести из файла", "Назад", "Выйти" };
+    const int lab5Secondary_QUEUE_Count = sizeof(lab5Secondary_QUEUE_Menu) / sizeof(lab5Secondary_QUEUE_Menu[0]);
+
+    bsuir st;
+
+    bool inLab5Secondary_QUEUE_Menu = true;
+    while (inLab5Secondary_QUEUE_Menu) {
+        int lab5_choice = main_showMenu("Лабораторная работа 5 (queue)", lab5Secondary_QUEUE_Menu, lab5Secondary_QUEUE_Count);
+
+        switch (lab5_choice) {
+        case LAB5_ADD_INFO: {
+
+            st.AddInf("queue");
+            break;
+        }
+        case LAB5_DELETE_INFO: {
+
+            st.DeleteInf("queue");
+            break;
+        }
+        case LAB5_CHANGE_INFO: {
+
+            st.ChangeInf("queue");
+            break;
+        }
+        case LAB5_FIND_INFO: {
+
+            st.SearchInf("queue");
+            break;
+        }
+        case LAB5_SORT_INFO: {
+
+            st.ShowInf("queue");
+            break;
+        }
+        case LAB5_FILTER_INFO: {
+            st.FilterInf("queue");
+            break;
+        }
+        case LAB5_ADD_TO_FILE: {
+            
+            break;
+        }
+        case LAB5_SHOW_FROM_FILE: {
+            
+            break;
+        }
+        case LAB5_CONTAINER_BACK: {
+            inLab5Secondary_QUEUE_Menu = false;
+            break;
+        }
+        case LAB5_CONTAINER_EXIT: {
+            std::cout << "Выходим из программы";
+            loadingImitation();
+            exit(0);
+        }
+        default:
+            break;
+        }
+    }
+}
+static void showLab5Secondary_STACK_Menu() {
+    const std::string lab5Secondary_STACK_Menu[]{ "Добавить", "Удалить", "Редактировать", "Поиск", "Сортировка", "Фильтрация", "Добавить в файл", "Вывести из файла", "Назад", "Выйти" };
+    const int lab5Secondary_STACK_Count = sizeof(lab5Secondary_STACK_Menu) / sizeof(lab5Secondary_STACK_Menu[0]);
+
+    bsuir st;
+
+    bool inLab5Secondary_STACK_Menu = true;
+    while (inLab5Secondary_STACK_Menu) {
+        int lab5_choice = main_showMenu("Лабораторная работа 5 (stack)", lab5Secondary_STACK_Menu, lab5Secondary_STACK_Count);
+
+        switch (lab5_choice) {
+        case LAB5_ADD_INFO: {
+
+            st.AddInf("stack");
+            break;
+        }
+        case LAB5_DELETE_INFO: {
+
+            st.DeleteInf("stack");
+            break;
+        }
+        case LAB5_CHANGE_INFO: {
+
+            st.ChangeInf("stack");
+            break;
+        }
+        case LAB5_FIND_INFO: {
+
+            st.SearchInf("stack");
+            break;
+        }
+        case LAB5_SORT_INFO: {
+
+            st.ShowInf("stack");
+            break;
+        }
+        case LAB5_FILTER_INFO: {
+            st.FilterInf("stack");
+            break;
+        }
+        case LAB5_ADD_TO_FILE: {
+
+            break;
+        }
+        case LAB5_SHOW_FROM_FILE: {
+
+            break;
+        }
+        case LAB5_CONTAINER_BACK: {
+            inLab5Secondary_STACK_Menu = false;
+            break;
+        }
+        case LAB5_CONTAINER_EXIT: {
+            std::cout << "Выходим из программы";
+            loadingImitation();
+            exit(0);
+        }
+        default:
+            break;
+        }
+    }
+}
+static void showLab5Secondary_PRIORITY_QUEUE_Menu() {
+    const std::string lab5Secondary_PRIORITY_QUEUE_Menu[]{ "Добавить", "Удалить", "Редактировать", "Поиск", "Сортировка", "Фильтрация", "Добавить в файл", "Вывести из файла", "Назад", "Выйти" };
+    const int lab5Secondary_PRIORITY_QUEUE_Count = sizeof(lab5Secondary_PRIORITY_QUEUE_Menu) / sizeof(lab5Secondary_PRIORITY_QUEUE_Menu[0]);
+
+    bsuir st;
+
+    bool inLab5Secondary_PRIORITY_QUEUE_Menu = true;
+    while (inLab5Secondary_PRIORITY_QUEUE_Menu) {
+        int lab5_choice = main_showMenu("Лабораторная работа 5 (priority_queue)", lab5Secondary_PRIORITY_QUEUE_Menu, lab5Secondary_PRIORITY_QUEUE_Count);
+
+        switch (lab5_choice) {
+        case LAB5_ADD_INFO: {
+
+            st.AddInf("priority_queue");
+            break;
+        }
+        case LAB5_DELETE_INFO: {
+
+            st.DeleteInf("priority_queue");
+            break;
+        }
+        case LAB5_CHANGE_INFO: {
+
+            st.ChangeInf("priority_queue");
+            break;
+        }
+        case LAB5_FIND_INFO: {
+
+            st.SearchInf("priority_queue");
+            break;
+        }
+        case LAB5_SORT_INFO: {
+
+            st.ShowInf("priority_queue");
+            break;
+        }
+        case LAB5_FILTER_INFO: {
+            st.FilterInf("priority_queue");
+            break;
+        }
+        case LAB5_ADD_TO_FILE: {
+
+            break;
+        }
+        case LAB5_SHOW_FROM_FILE: {
+
+            break;
+        }
+        case LAB5_CONTAINER_BACK: {
+            inLab5Secondary_PRIORITY_QUEUE_Menu = false;
+            break;
+        }
+        case LAB5_CONTAINER_EXIT: {
             std::cout << "Выходим из программы";
             loadingImitation();
             exit(0);

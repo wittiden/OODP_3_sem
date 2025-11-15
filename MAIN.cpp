@@ -6,12 +6,11 @@
 #include "cursor_menu.h"
 #include "cursor_visibility.h"
 #include "input_check.h"
-#include "lab1-2.h"
-#include "lab3.h"
+#include "institution.h"
 #include "threads_options.h"
 #include "main_functions.cpp"
 
-enum main_menu_names { LAB_1, LAB_2, LAB_3, LAB_4, MAIN_EXIT };
+enum main_menu_names { LAB_1, LAB_2, LAB_3, LAB_4, LAB_5, MAIN_EXIT };
 enum secondary_menu_names { SHOW_LAB_INFO, LAB_IMPLEMENTATION, BACK_TO_MAIN_MENU, SECONDARY_EXIT };
 
 int main(int argc, char* argv[]) {
@@ -24,7 +23,7 @@ int main(int argc, char* argv[]) {
 	//std::thread activity_control(activity_monitor);
 	//activity_control.detach();
 
-	const std::string main_Menu[]{ "1 - Использование потоков ввода/вывода данных", "2 - Использование потоков файлового ввода/вывода данных", "3 - Контейнеры VECTOR, ARRAY, LIST","4 - Контейнеры map, set, multimap, multiset, unordered_map, unordered_set, unordered_multimap, unordered_multiset", "Выход" };
+	const std::string main_Menu[]{ "1 - Использование потоков ввода/вывода данных", "2 - Использование потоков файлового ввода/вывода данных", "3 - Контейнеры VECTOR, ARRAY, LIST","4 - Контейнеры map, set, multimap, multiset, unordered_map, unordered_set, unordered_multimap, unordered_multiset", "5 - Контейнеры queue, stack, priority_queue","Выход"};
 	const int main_Menu_Count = sizeof(main_Menu) / sizeof(main_Menu[0]);
 
 	bool inMainMenu = true;
@@ -160,6 +159,43 @@ int main(int argc, char* argv[]) {
 				}
 				case LAB_IMPLEMENTATION: {
 					showLab4Menu();
+					break;
+				}
+				case BACK_TO_MAIN_MENU: {
+					std::cout << "Возвращаемся в предыдущее меню";
+					loadingImitation();
+
+					inSecondaryMenu = false;
+					break;
+				}
+				case SECONDARY_EXIT: {
+					std::cout << "Выходим из программы";
+					loadingImitation();
+
+					return 0;
+				}
+				default:
+					break;
+				}
+			}
+			break;
+		}
+		case LAB_5: {
+			const std::string secondary_Menu[]{ "Получить информацию о задании", "Выполнить задание", "Назад", "Выход" };
+			const int secondary_Menu_Count = sizeof(secondary_Menu) / sizeof(secondary_Menu[0]);
+
+			bool inSecondaryMenu = true;
+			while (inSecondaryMenu) {
+				int secondary_Menu_choice = main_showMenu("5 - Контейнеры queue, stack, priority_queue", secondary_Menu, secondary_Menu_Count, false);
+
+				switch (secondary_Menu_choice) {
+				case SHOW_LAB_INFO: {
+					std::cout << "Учет студентов ВУЗа\n\nВо всех вариантах индивидуальных заданий необходимо реализовать работу с контейнерами queue, stack, priority_queue.Уметь обосновать использование каждого типа контейнера. В каждом индивидуальном задании необходимо создать контейнеры, которые будут хранить объекты классов по предметной области, указанной в таблице ниже(класс должен содержать функционал по предметной области (добавление, удаление, редактирование, поиск, фильтр данных)).Для контейнера реализовать добавление, удаление, редактирование, вывод содержимого контейнера на экран и в файл, поиск и сортировку элементов. Необходимо создать удобное\n";
+					system("pause");
+					break;
+				}
+				case LAB_IMPLEMENTATION: {
+					showLab5Menu();
 					break;
 				}
 				case BACK_TO_MAIN_MENU: {
