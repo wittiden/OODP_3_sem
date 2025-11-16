@@ -1,50 +1,59 @@
 #pragma once
+//Queue & priority_Queue
 template<typename T>
 class Queue {
-    template<typename T>
     class Node {
     public:
         Node* pNext;
         T data;
-        Node(T data = T(), Node* pNext = nullptr) {
+        int priority;
+
+        Node(T data = T(), int priority = 0, Node* pNext = nullptr) {
             this->data = data;
+            this->priority = priority;
             this->pNext = pNext;
         }
     };
 
     int Size;
-    Node<T>* head;
-    Node<T>* tail;
-
+    Node* head;
+    Node* tail;
+    bool isPriorityQueue;
 public:
-    Queue();
+    Queue(bool isPriority = false);
     ~Queue();
 
-    void enqueue(T data);
+    void enqueue(T data, int priority = 0);
     void dequeue();
     T& front();
     T& back();
     bool empty() const;
     int getSize() const { return Size; }
-
-
     void clear();
-    bool update(int index, T newData);
-    void sort(bool ascending = true);
-    Queue<T> filter(bool (*predicate)(T));
+
+    int getPriority(int index) const;
+
+    bool isPriority() const { return isPriorityQueue; }
+    void setPriorityMode(bool isPriority) {
+        if (!empty()) {
+            throw std::runtime_error("Cannot change mode on non-empty queue");
+        }
+        isPriorityQueue = isPriority;
+    }
 
     T& operator[](const int index);
-    void print() const;
 
+    Queue<T> filterByIdRange(int start_id, int end_id) const;
 private:
-    void swap(Node<T>* a, Node<T>* b);
+    void insertPriority(Node* newNode);
 };
 
 template<typename T>
-Queue<T>::Queue() {
+Queue<T>::Queue(bool isPriority) {
     Size = 0;
     head = nullptr;
     tail = nullptr;
+    isPriorityQueue = isPriority;
 }
 
 template<typename T>
@@ -53,24 +62,56 @@ Queue<T>::~Queue() {
 }
 
 template<typename T>
-void Queue<T>::enqueue(T data) {
-    Node<T>* newNode = new Node<T>(data);
+void Queue<T>::enqueue(T data, int priority) {
+    Node* newNode = new Node(data, priority);
 
-    if (tail == nullptr) {
-        head = tail = newNode;
+    if (isPriorityQueue) {
+        insertPriority(newNode);
     }
     else {
-        tail->pNext = newNode;
-        tail = newNode;
+        if (tail == nullptr) {
+            head = tail = newNode;
+        }
+        else {
+            tail->pNext = newNode;
+            tail = newNode;
+        }
     }
     Size++;
+}
+
+template<typename T>
+void Queue<T>::insertPriority(Node* newNode) {
+    if (head == nullptr) {
+        head = tail = newNode;
+        return;
+    }
+
+    if (newNode->priority > head->priority) {
+        newNode->pNext = head;
+        head = newNode;
+        return;
+    }
+
+    Node* current = head;
+    while (current->pNext != nullptr &&
+        current->pNext->priority >= newNode->priority) {
+        current = current->pNext;
+    }
+
+    newNode->pNext = current->pNext;
+    current->pNext = newNode;
+
+    if (newNode->pNext == nullptr) {
+        tail = newNode;
+    }
 }
 
 template<typename T>
 void Queue<T>::dequeue() {
     if (head == nullptr) return;
 
-    Node<T>* toDelete = head;
+    Node* toDelete = head;
     head = head->pNext;
 
     if (head == nullptr) {
@@ -94,6 +135,9 @@ T& Queue<T>::back() {
     if (tail == nullptr) {
         throw std::runtime_error("Queue is empty");
     }
+    if (isPriorityQueue) {
+        throw std::runtime_error("Back() not supported for priority queue");
+    }
     return tail->data;
 }
 
@@ -115,7 +159,7 @@ T& Queue<T>::operator[](const int index) {
         throw std::out_of_range("Index out of range");
     }
 
-    Node<T>* current = head;
+    Node* current = head;
     for (int i = 0; i < index; i++) {
         current = current->pNext;
     }
@@ -123,28 +167,14 @@ T& Queue<T>::operator[](const int index) {
 }
 
 template<typename T>
-bool Queue<T>::update(int index, T newData) {
-    if (index < 0 || index >= Size) {
-        return false;
-    }
+Queue<T> Queue<T>::filterByIdRange(int min_id, int max_id) const {
+    Queue<T> result(isPriorityQueue);
 
-    Node<T>* current = head;
-    for (int i = 0; i < index; i++) {
-        current = current->pNext;
-    }
-
-    current->data = newData;
-    return true;
-}
-
-template<typename T>
-Queue<T> Queue<T>::filter(bool (*predicate)(T)) {
-    Queue<T> result;
-    Node<T>* current = head;
-
+    Node* current = head;
     while (current != nullptr) {
-        if (predicate(current->data)) {
-            result.enqueue(current->data);
+        int current_id = current->data.GetId();
+        if (current_id >= min_id && current_id <= max_id) {
+            result.enqueue(current->data, current->priority);
         }
         current = current->pNext;
     }
@@ -153,27 +183,118 @@ Queue<T> Queue<T>::filter(bool (*predicate)(T)) {
 }
 
 template<typename T>
-void Queue<T>::print() const {
-    if (empty()) {
-        std::cout << "Queue is empty" << std::endl;
-        return;
+int Queue<T>::getPriority(int index) const {
+    if (!isPriorityQueue) {
+        throw std::runtime_error("getPriority only available for priority queue");
     }
 
-    Node<T>* current = head;
-    std::cout << "Queue (" << Size << " elements): ";
-    while (current != nullptr) {
-        std::cout << current->data;
-        if (current->pNext != nullptr) {
-            std::cout << " -> ";
-        }
+    if (index < 0 || index >= Size) {
+        throw std::out_of_range("Index out of range");
+    }
+
+    Node* current = head;
+    for (int i = 0; i < index; i++) {
         current = current->pNext;
     }
-    std::cout << std::endl;
+
+    return current->priority;
+}
+
+// Stack 
+template<typename T>
+class Stack {
+    class Node {
+    public:
+        Node* pNext;
+        T data;
+        Node(T data = T(), Node* pNext = nullptr) {
+            this->data = data;
+            this->pNext = pNext;
+        }
+    };
+    int Size;
+    Node* head;
+public:
+    Stack();
+    ~Stack();
+    int GetSize() { return Size; }
+    T& operator[](const int index);
+    void pop_front();
+    void clear();
+    void push_front(T data);
+    bool empty() const;
+    Stack<T> filterByIdRange(int min_id, int max_id) const;
+};
+
+template<typename T>
+Stack<T>::Stack() {
+    Size = 0;
+    head = nullptr;
 }
 
 template<typename T>
-void Queue<T>::swap(Node<T>* a, Node<T>* b) {
-    T temp = a->data;
-    a->data = b->data;
-    b->data = temp;
+Stack<T>::~Stack() {
+    clear();
+}
+
+template<typename T>
+T& Stack<T>::operator[](const int index) {
+    int counter = 0;
+    Node* current = this->head;
+    while (current != nullptr) {
+        if (counter == index) {
+            return current->data;
+        }
+        current = current->pNext;
+        counter++;
+    }
+    throw std::out_of_range("Index out of range");
+}
+
+template<typename T>
+void Stack<T>::pop_front() {
+    if (head == nullptr) return;
+
+    Node* temp = head;
+    head = head->pNext;
+    delete temp;
+    Size--;
+}
+
+template<typename T>
+void Stack<T>::clear() {
+    while (Size) {
+        pop_front();
+    }
+}
+
+template<typename T>
+void Stack<T>::push_front(T data) {
+    head = new Node(data, head);
+    Size++;
+}
+
+template<typename T>
+bool Stack<T>::empty() const {
+    return head == nullptr;
+}
+template<typename T>
+Stack<T> Stack<T>::filterByIdRange(int min_id, int max_id) const {
+    Stack<T> temp;
+    Stack<T> result;
+
+    Node* current = head;
+    while (current != nullptr) {
+        int current_id = current->data.GetId();
+        if (current_id >= min_id && current_id <= max_id) {
+            temp.push_front(current->data);
+        }
+        current = current->pNext;
+    }
+    while (!temp.empty()) {
+        result.push_front(temp[0]);
+        temp.pop_front();
+    }
+
+    return result;
 }

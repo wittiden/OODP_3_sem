@@ -8,6 +8,7 @@
 #include "cursor_menu.h"
 #include "cursor_visibility.h"
 #include "input_check.h"
+#include "threads_options.h"
 
 #include "lab3_array_vector_list.h"
 #include "lab4_map_set_hashtable.h"
@@ -23,6 +24,7 @@ public:
     virtual void SortInf(std::string type) = 0;
     virtual void SearchInf(std::string type) = 0;
     virtual void FilterInf(std::string type) = 0;
+    virtual void addFileInfo(std::string type) = 0;
     virtual ~institution() = 0;
 };
 institution::~institution() {}
@@ -47,6 +49,8 @@ private:
     static unordered_map<int, bsuir> students_unordered_map;
     //lab5
     static Queue<bsuir> students_queue;
+    static Queue<bsuir> students_priority_queue;
+    static Stack<bsuir> students_stack;
 public:
     bsuir() { fullname = ""; faculty = ""; major = ""; id = 0; }
     bsuir(std::string fullname) :bsuir() { this->fullname = fullname; }
@@ -80,17 +84,39 @@ public:
         return os;
     }
 
-    template<typename T>
-    void addFileInfo(std::string type, const T* container, size_t size) {
-        std::ofstream os("MyFILE.txt", std::ios::app);
+    void addFileInfo(std::string type) {
+        std::ofstream os("MyFILE.txt", std::ios::trunc);
 
-        if (type == "array") {
-            os << "=== ARRAY ===" << std::endl;
-            for (size_t i = 0; i < size; ++i) {
-                os << container[i] << std::endl;
+        if (type == "queue") {
+            if (students_queue.empty()) return;
+
+            os << "=== QUEUE ===" << std::endl;
+            for (size_t i = 0; i < students_queue.getSize(); i++) {
+                os << students_queue[i] << std::endl;
             }
         }
+        else if (type == "priority_queue") {
+            if (students_priority_queue.empty()) return;
+
+            os << "=== PRIORITY_QUEUE ===" << std::endl;
+            for (int i = 0; i < students_priority_queue.getSize(); i++) {
+                int priority = students_priority_queue.getPriority(i);
+                os << i << ": " << students_priority_queue[i] << " [Приоритет: " << priority << "]" << std::endl;
+            }
+        }
+        if (type == "stack") {
+            if (students_stack.empty()) return;
+
+            os << "=== STACK ===" << std::endl;
+            for (size_t i = 0; i < students_stack.GetSize(); i++) {
+                os << students_stack[i] << std::endl;
+            }
+        }
+
+        std::cout << "Добавляем в файл";
+        loadingImitation();
     }
+
 
     void AddInf(std::string type) override {
         if (type == "array") {
@@ -151,8 +177,6 @@ public:
             }
             std::cout << std::endl;
             system("pause");
-
-            addFileInfo("array", students_array, student_array_size);
         }
         else if (type == "vector") {
             unsigned add_choice;
@@ -442,26 +466,6 @@ public:
             } while (add_final_choice != 2);
 
         }
-        /*else if (type == "queue") {
-            unsigned students_to_add;
-            std::cout << "Введите количество студентов, которое вы хотите добавить: ";
-            number_filteredInput<unsigned>(students_to_add);
-
-            for (int i = 0; i < students_to_add; i++) {
-                std::cout << "\n=== ДОБАВЛЕНИЕ СТУДЕНТА " << (i + 1) << " (QUEUE) ===\n\n";
-
-                bsuir newStudent;
-                std::cin >> newStudent;
-
-                count++;
-                newStudent.SetId(count);
-
-                students_queue.enqueue(newStudent);
-
-                std::cout << "Студент добавлен в очередь успешно! ID: " << newStudent.GetId() << "\n";
-                std::cout << "Текущий размер очереди: " << students_queue.getSize() << "\n";
-            }
-        }*/
         else if (type == "unordered_map") {
             unsigned students_to_add;
             std::cout << "Введите количество студентов, которое вы хотите добавить: ";
@@ -484,6 +488,134 @@ public:
             std::cout << std::endl;
             system("pause");
         }
+        else if (type == "queue") {
+            unsigned add_final_choice;
+
+            do {
+                std::cout << "=== ДОБАВЛЕНИЕ СТУДЕНТА (QUEUE) ===\n";
+
+                bsuir newStudent;
+                std::cin >> newStudent;
+
+                count++;
+                newStudent.SetId(count);
+
+                students_queue.enqueue(newStudent);
+                std::cout << "Студент добавлен успешно! ID: " << newStudent.GetId() << "\n";
+
+                do {
+                    std::cout << "\nВыберите действие:\n";
+                    std::cout << "1 - Показать список\n";
+                    std::cout << "2 - Продолжить создание\n";
+                    std::cout << "3 - Выйти\n";
+
+                    std::cout << "Номер действия: ";
+                    number_filteredInput<unsigned>(add_final_choice);
+                    std::cout << std::endl;
+
+                    if (add_final_choice == 1) {
+                        ShowInf("queue");
+                    }
+                    else if (add_final_choice == 2) {
+                        break;
+                    }
+                    else if (add_final_choice == 3) {
+                        break;
+                    }
+                } while (true);
+
+            } while (add_final_choice != 3);
+            }
+        else if (type == "priority_queue") {
+            unsigned add_final_choice;
+
+            do {
+                std::cout << "=== ДОБАВЛЕНИЕ СТУДЕНТА (PRIORITY_QUEUE) ===\n";
+
+                bsuir newStudent;
+                std::cin >> newStudent;
+
+                count++;
+                newStudent.SetId(count);
+
+                int priority;
+                bool priority_flag = false;
+                do {
+                    std::cout << "Введите приоритет студента [1-3]: ";
+                    number_filteredInput<int>(priority);
+                    if (priority > 0 && priority <= 3) {
+                        priority_flag = true;
+                    }
+                    else {
+                        std::cout << "Некорректное значение!\n";
+                    }
+                } while (!priority_flag);
+
+
+                students_priority_queue.enqueue(newStudent, priority);
+                std::cout << "Студент добавлен успешно! ID: " << newStudent.GetId() << "\n";
+
+                do {
+                    std::cout << "\nВыберите действие:\n";
+                    std::cout << "1 - Показать список\n";
+                    std::cout << "2 - Продолжить создание\n";
+                    std::cout << "3 - Выйти\n";
+
+                    std::cout << "Номер действия: ";
+                    number_filteredInput<unsigned>(add_final_choice);
+                    std::cout << std::endl;
+
+                    if (add_final_choice == 1) {
+                        ShowInf("priority_queue");
+                    }
+                    else if (add_final_choice == 2) {
+                        break;
+                    }
+                    else if (add_final_choice == 3) {
+                        break;
+                    }
+                } while (true);
+
+            } while (add_final_choice != 3);
+            }
+        else if (type == "stack") {
+            unsigned add_final_choice;
+
+            do {
+                std::cout << "=== ДОБАВЛЕНИЕ СТУДЕНТА (STACK) ===\n";
+
+                bsuir newStudent;
+                std::cin >> newStudent;
+
+                count++;
+                newStudent.SetId(count);
+
+                students_stack.push_front(newStudent);
+                std::cout << "Студент добавлен успешно! ID: " << newStudent.GetId() << "\n";
+
+                do {
+                    std::cout << "\nВыберите действие:\n";
+                    std::cout << "1 - Показать список\n";
+                    std::cout << "2 - Продолжить создание\n";
+                    std::cout << "3 - Выйти\n";
+
+                    std::cout << "Номер действия: ";
+                    number_filteredInput<unsigned>(add_final_choice);
+                    std::cout << std::endl;
+
+                    if (add_final_choice == 1) {
+                        ShowInf("stack");
+                    }
+                    else if (add_final_choice == 2) {
+                        break;
+                    }
+                    else if (add_final_choice == 3) {
+                        break;
+                    }
+                } while (true);
+
+            } while (add_final_choice != 3);
+            }
     }
 
     void DeleteInf(std::string type) override {
@@ -876,36 +1008,7 @@ public:
 
             } while (del_final_choice != 3);
             }
-       /* else if (type == "queue") {
-            std::cout << "\n=== УДАЛЕНИЕ ИЗ QUEUE ===\n";
-
-            if (students_queue.empty()) {
-                std::cout << "Очередь пуста!\n";
-                return;
-            }
-
-            unsigned delete_choice;
-            std::cout << "Выберите действие:\n";
-            std::cout << "1 - Удалить из начала (dequeue)\n";
-            std::cout << "2 - Очистить всю очередь\n";
-            std::cout << "Номер действия: ";
-            number_filteredInput<unsigned>(delete_choice);
-
-            if (delete_choice == 1) {
-                std::cout << "Удаляем студента: " << students_queue.front() << std::endl;
-                students_queue.dequeue();
-                std::cout << "Студент удален из начала очереди!\n";
-                std::cout << "Текущий размер очереди: " << students_queue.getSize() << "\n";
-            }
-            else if (delete_choice == 2) {
-                students_queue.clear();
-                std::cout << "Очередь полностью очищена!\n";
-            }
-            else {
-                std::cout << "Неверный выбор!\n";
-            }
-            }*/
-        if (type == "unordered_map") {
+        else if (type == "unordered_map") {
             std::cout << "\n=== УДАЛЕНИЕ ИЗ UNORDERED_MAP ===\n";
 
             if (students_unordered_map.empty()) {
@@ -940,7 +1043,177 @@ public:
                 std::cout << "Неверный выбор!\n";
             }
         }
+        else if (type == "queue") {
+            if (students_queue.empty()) {
+                std::cout << "Очередь пуста!\n";
+                system("pause");
+                return;
+            }
 
+            unsigned del_choice;
+            unsigned del_final_choice;
+
+            do {
+                std::cout << "\n=== УДАЛЕНИЕ ИЗ QUEUE ===\n";
+                ShowInf("queue");
+
+                std::cout << "\nВыберите действие:\n";
+                std::cout << "1 - Удалить 1 элемент\n";
+                std::cout << "2 - Удалить всю очередь\n";
+
+                std::cout << "Номер действия: ";
+                number_filteredInput<unsigned>(del_choice);
+
+                if (del_choice == 1) {
+                    students_queue.dequeue();
+                    std::cout << "Студент удален из очереди!\n";
+                }
+                else if (del_choice == 2) {
+                    students_queue.clear();
+                    std::cout << "Очередь полностью удалена!\n";
+                }
+                else {
+                    std::cout << "Неверный выбор!\n";
+                }
+
+                if (students_queue.empty()) {
+                    system("pause");
+                    std::cout << "Очередь пуста!\n";
+                    return;
+                }
+                else {
+                    do {
+                        std::cout << "\nВыберите действие:\n";
+                        std::cout << "1 - Продолжить удаление\n";
+                        std::cout << "2 - Выйти\n";
+
+                        std::cout << "Номер действия: ";
+                        number_filteredInput<unsigned>(del_final_choice);
+
+                        if (del_final_choice == 1) {
+                            break;
+                        }
+                        else if (del_final_choice == 2) {
+                            break;
+                        }
+                    } while (true);
+                }
+            } while (del_final_choice != 2);
+        }
+        else if (type == "priority_queue") {
+            if (students_priority_queue.empty()) {
+                std::cout << "Очередь с приоритетом пуста!\n";
+                system("pause");
+                return;
+            }
+
+            unsigned del_choice;
+            unsigned del_final_choice;
+
+            do {
+                std::cout << "\n=== УДАЛЕНИЕ ИЗ PRIORITY_QUEUE ===\n";
+                ShowInf("priority_queue");
+
+                std::cout << "\nВыберите действие:\n";
+                std::cout << "1 - Удалить 1 элемент\n";
+                std::cout << "2 - Удалить всю очередь\n";
+
+                std::cout << "Номер действия: ";
+                number_filteredInput<unsigned>(del_choice);
+
+                if (del_choice == 1) {
+                    students_priority_queue.dequeue();
+                    std::cout << "Студент удален из очереди с приоритетом!\n";
+                }
+                else if (del_choice == 2) {
+                    students_priority_queue.clear();
+                    std::cout << "Очередь с приоритетом полностью удалена!\n";
+                }
+                else {
+                    std::cout << "Неверный выбор!\n";
+                }
+
+                if (students_priority_queue.empty()) {
+                    system("pause");
+                    std::cout << "Очередь с приоритетом пуста!\n";
+                    return;
+                }
+                else {
+                    do {
+                        std::cout << "\nВыберите действие:\n";
+                        std::cout << "1 - Продолжить удаление\n";
+                        std::cout << "2 - Выйти\n";
+
+                        std::cout << "Номер действия: ";
+                        number_filteredInput<unsigned>(del_final_choice);
+
+                        if (del_final_choice == 1) {
+                            break;
+                        }
+                        else if (del_final_choice == 2) {
+                            break;
+                        }
+                    } while (true);
+                }
+            } while (del_final_choice != 2);
+            }
+        else if (type == "stack") {
+            if (students_stack.empty()) {
+                std::cout << "Очередь с приоритетом пуста!\n";
+                system("pause");
+                return;
+            }
+
+            unsigned del_choice;
+            unsigned del_final_choice;
+
+            do {
+                std::cout << "\n=== УДАЛЕНИЕ ИЗ STACK ===\n";
+                ShowInf("stack");
+
+                std::cout << "\nВыберите действие:\n";
+                std::cout << "1 - Удалить 1 элемент\n";
+                std::cout << "2 - Удалить весь stack\n";
+
+                std::cout << "Номер действия: ";
+                number_filteredInput<unsigned>(del_choice);
+
+                if (del_choice == 1) {
+                    students_stack.pop_front();
+                    std::cout << "Студент удален!\n";
+                }
+                else if (del_choice == 2) {
+                    students_stack.clear();
+                    std::cout << "Stack полностью удален!\n";
+                }
+                else {
+                    std::cout << "Неверный выбор!\n";
+                }
+
+                if (students_stack.empty()) {
+                    system("pause");
+                    std::cout << "Stack пуст!\n";
+                    return;
+                }
+                else {
+                    do {
+                        std::cout << "\nВыберите действие:\n";
+                        std::cout << "1 - Продолжить удаление\n";
+                        std::cout << "2 - Выйти\n";
+
+                        std::cout << "Номер действия: ";
+                        number_filteredInput<unsigned>(del_final_choice);
+
+                        if (del_final_choice == 1) {
+                            break;
+                        }
+                        else if (del_final_choice == 2) {
+                            break;
+                        }
+                    } while (true);
+                }
+            } while (del_final_choice != 2);
+            }
     }
 
     void ChangeInf(std::string type) override {
@@ -1213,62 +1486,6 @@ public:
 
             } while (change_final_choice != 3);
         }
-       /* else if (type == "queue") {
-            std::cout << "\n=== РЕДАКТИРОВАНИЕ В QUEUE ===\n";
-
-            if (students_queue.empty()) {
-                std::cout << "Очередь пуста!\n";
-                return;
-            }
-
-            unsigned change_final_choice;
-
-            do {
-                std::cout << "Текущая очередь:\n";
-                students_queue.print();
-
-                int id_to_change;
-                std::cout << "Введите ID студента для редактирования: ";
-                number_filteredInput<int>(id_to_change);
-
-                bool found = false;
-                for (int i = 0; i < students_queue.getSize(); i++) {
-                    if (students_queue[i].GetId() == id_to_change) {
-                        found = true;
-                        std::cout << "Найден студент: " << students_queue[i] << std::endl;
-
-                        bsuir updatedStudent;
-                        std::cout << "\nВведите новые данные:\n";
-                        std::cin >> updatedStudent;
-                        updatedStudent.SetId(id_to_change);
-
-                        students_queue.update(i, updatedStudent);
-
-                        std::cout << "Информация изменена успешно!\n";
-                        std::cout << "Обновленные данные: " << updatedStudent << std::endl;
-                        break;
-                    }
-                }
-
-                if (!found) {
-                    std::cout << "Студент с ID " << id_to_change << " не найден в очереди!\n";
-                }
-
-                do {
-                    std::cout << "\nВыберите действие:\n";
-                    std::cout << "1 - Продолжить редактирование\n";
-                    std::cout << "2 - Выйти\n";
-
-                    std::cout << "Номер действия: ";
-                    number_filteredInput<unsigned>(change_final_choice);
-
-                    if (change_final_choice == 1 || change_final_choice == 2) {
-                        break;
-                    }
-                } while (true);
-
-            } while (change_final_choice == 1);
-            }*/
         else if (type == "unordered_map") {
             std::cout << "\n=== РЕДАКТИРОВАНИЕ В UNORDERED_MAP ===\n";
 
@@ -1308,6 +1525,95 @@ public:
                 do {
                     std::cout << "\nВыберите действие:\n";
                     std::cout << "1 - Продолжить редактирование\n";
+                    std::cout << "2 - Выйти\n";
+
+                    std::cout << "Номер действия: ";
+                    number_filteredInput<unsigned>(change_final_choice);
+
+                    if (change_final_choice == 1 || change_final_choice == 2) {
+                        break;
+                    }
+                } while (true);
+
+            } while (change_final_choice == 1);
+        }
+        else if (type == "queue") {
+            if (students_queue.getSize() == 0) return;
+
+            unsigned change_id;
+            unsigned change_final_choice;
+
+            do {
+                std::cout << "=== ИЗМЕНЕНИЕ ДАННЫХ СТУДЕНТА (QUEUE) ===\n";
+                ShowInf("queue");
+
+                std::cout << "Введите ID студента: ";
+                number_filteredInput<unsigned>(change_id);
+
+                int found_index = -1;
+                for (int i = 0; i < students_queue.getSize(); i++) {
+                    if (students_queue[i].GetId() == change_id) {
+                        found_index = i;
+                        break;
+                    }
+                }
+
+                if (found_index == -1) {
+                    std::cout << "\nСтудент с ID " << change_id << " не найден!\n";
+                }
+                else {
+                    std::cout << "\nНайден студент: " << students_queue[found_index] << std::endl;
+
+                    bsuir updatedStudent;
+                    std::cout << "\nВведите новые данные:\n";
+                    std::cin >> updatedStudent;
+                    updatedStudent.SetId(change_id);
+                    students_queue[found_index] = updatedStudent;
+
+                    std::cout << "Информация изменена успешно!\n";
+                    std::cout << "Обновленные данные: " << students_queue[found_index] << std::endl;
+                }
+
+                do {
+                    std::cout << "\nВыберите действие:\n";
+                    std::cout << "1 - Продолжить изменение\n";
+                    std::cout << "2 - Выйти\n";
+
+                    std::cout << "Номер действия: ";
+                    number_filteredInput<unsigned>(change_final_choice);
+
+                    if (change_final_choice == 1 || change_final_choice == 2) {
+                        break;
+                    }
+                } while (true);
+
+            } while (change_final_choice == 1);
+        }
+        else if (type == "stack") {
+            if (students_stack.empty()) {
+                std::cout << "Стек пуст!\n";
+                return;
+            }
+
+            unsigned change_final_choice;
+
+            do {
+                std::cout << "=== ИЗМЕНЕНИЕ ДАННЫХ СТУДЕНТА (STACK) ===\n";
+                ShowInf("stack");
+
+                bsuir updatedStudent;
+                std::cout << "\nВведите новые данные для изменения верхнего элемента:\n";
+                std::cin >> updatedStudent;
+                updatedStudent.SetId(0);
+
+                students_stack[0] = updatedStudent;
+
+                std::cout << "Информация изменена успешно!\n";
+                std::cout << "Обновленные данные: " << students_stack[0] << std::endl;
+
+                do {
+                    std::cout << "\nВыберите действие:\n";
+                    std::cout << "1 - Продолжить изменение\n";
                     std::cout << "2 - Выйти\n";
 
                     std::cout << "Номер действия: ";
@@ -1379,22 +1685,7 @@ public:
             std::cout << std::endl;
             system("pause");
         }
-       /* else if (type == "queue") {
-            std::cout << "\n=== ОЧЕРЕДЬ СТУДЕНТОВ ===\n";
-            std::cout << "Размер: " << students_queue.getSize() << " элементов\n\n";
-
-            if (students_queue.empty()) {
-                std::cout << "Очередь пуста!\n";
-            }
-            else {
-                students_queue.print();
-
-                std::cout << "\nДетальная информация:\n";
-                std::cout << "Первый студент (front): " << students_queue.front() << std::endl;
-                std::cout << "Последний студент (back): " << students_queue.back() << std::endl;
-            }
-        }*/
-        if (type == "unordered_map") {
+        else if (type == "unordered_map") {
             std::cout << "\n=== UNORDERED_MAP СТУДЕНТОВ ===\n";
             std::cout << "Размер: " << students_unordered_map.size() << " элементов\n\n";
 
@@ -1408,10 +1699,34 @@ public:
                 students_unordered_map.printTable();
             }
         }
+        else if (type == "queue") {
+            if (students_queue.empty()) return;
+
+            std::cout << "\n=== СПИСОК СТУДЕНТОВ (QUEUE) ===\n";
+            for (size_t i = 0; i < students_queue.getSize(); i++) {
+                std::cout << i << ": " << students_queue[i] << std::endl;
+            }
+        }
+        else if (type == "priority_queue") {
+            if (students_priority_queue.empty()) return;
+
+            std::cout << "\n=== СПИСОК СТУДЕНТОВ (PRIORITY_QUEUE) ===\n";
+            for (int i = 0; i < students_priority_queue.getSize(); i++) {
+                int priority = students_priority_queue.getPriority(i);
+                std::cout << i << ": " << students_priority_queue[i] << " [Приоритет: " << priority << "]" << std::endl;
+            }
+        }
+        else if (type == "stack") {
+            if (students_stack.empty()) return;
+
+            std::cout << "\n=== СПИСОК СТУДЕНТОВ (STACK) ===\n";
+            for (size_t i = 0; i < students_stack.GetSize(); i++) {
+                std::cout << i << ": " << students_stack[i] << std::endl;
+            }
+        }
     }
 
     void SortInf(std::string type) override {
-
         if (type == "array") {
             if (student_array_size < 2) { return; }
 
@@ -1530,83 +1845,6 @@ public:
             system("pause");
 
         }
-        //else if (type == "queue") {
-        //    std::cout << "\n=== СОРТИРОВКА QUEUE ===\n";
-
-        //    if (students_queue.empty()) {
-        //        std::cout << "Очередь пуста!\n";
-        //        system("pause");
-        //        return;
-        //    }
-
-        //    unsigned sort_choice;
-        //    std::cout << "Выберите тип сортировки:\n";
-        //    std::cout << "1 - По возрастанию ID\n";
-        //    std::cout << "2 - По убыванию ID\n";
-        //    std::cout << "3 - По ФИО (алфавитный порядок)\n";
-        //    std::cout << "4 - По факультету (алфавитный порядок)\n";
-        //    std::cout << "Номер действия: ";
-        //    number_filteredInput<unsigned>(sort_choice);
-
-        //    // Создаем копию очереди для сортировки
-        //    Queue<bsuir> sorted_queue = students_queue;
-
-        //    if (sort_choice == 1) {
-        //        sorted_queue.sort(true);
-        //        std::cout << "Очередь отсортирована по возрастанию ID!\n";
-        //    }
-        //    else if (sort_choice == 2) {
-        //        sorted_queue.sort(false);
-        //        std::cout << "Очередь отсортирована по убыванию ID!\n";
-        //    }
-        //    else if (sort_choice == 3) {
-        //        // Сортировка по ФИО через временный вектор
-        //        std::vector<bsuir> temp;
-        //        while (!sorted_queue.empty()) {
-        //            temp.push_back(sorted_queue.front());
-        //            sorted_queue.dequeue();
-        //        }
-
-        //        std::sort(temp.begin(), temp.end(),
-        //            [](const bsuir& a, const bsuir& b) {
-        //                return a.GetFullname() < b.GetFullname();
-        //            });
-
-        //        for (const auto& student : temp) {
-        //            sorted_queue.enqueue(student);
-        //        }
-        //        std::cout << "Очередь отсортирована по ФИО (алфавитный порядок)!\n";
-        //    }
-        //    else if (sort_choice == 4) {
-        //        std::vector<bsuir> temp;
-        //        while (!sorted_queue.empty()) {
-        //            temp.push_back(sorted_queue.front());
-        //            sorted_queue.dequeue();
-        //        }
-
-        //        std::sort(temp.begin(), temp.end(),
-        //            [](const bsuir& a, const bsuir& b) {
-        //                return a.GetFaculty() < b.GetFaculty();
-        //            });
-
-        //        for (const auto& student : temp) {
-        //            sorted_queue.enqueue(student);
-        //        }
-        //        std::cout << "Очередь отсортирована по факультету (алфавитный порядок)!\n";
-        //    }
-        //    else {
-        //        std::cout << "Неверный выбор!\n";
-        //        return;
-        //    }
-
-        //    std::cout << "\n=== ОРИГИНАЛЬНАЯ ОЧЕРЕДЬ ===\n";
-        //    students_queue.print();
-
-        //    std::cout << "\n=== ОТСОРТИРОВАННАЯ ОЧЕРЕДЬ ===\n";
-        //    sorted_queue.print();
-
-        //    system("pause");
-        //    }
         else if (type == "unordered_map") {
             std::cout << "\n=== СОРТИРОВКА UNORDERED_MAP ===\n";
 
@@ -1687,8 +1925,87 @@ public:
             students_unordered_map.printAll();
             system("pause");
 
+        }
+        else if (type == "queue") {
+            if (students_queue.getSize() < 2) {
+                std::cout << "В очереди недостаточно элементов для сортировки!\n";
+                system("pause");
+                return;
+            }
+
+            std::cout << "=== СОРТИРОВКА ОЧЕРЕДИ ===\n";
+            std::cout << "По убыванию ID\n";
+
+            std::cout << "\n=== ИСХОДНАЯ ОЧЕРЕДЬ ===\n";
+            ShowInf("queue");
+
+            std::vector<bsuir> elements;
+            for (size_t i = 0; i < students_queue.getSize(); i++) {
+                elements.push_back(students_queue[i]);
+            }
+            std::sort(elements.begin(), elements.end(),
+                [](const bsuir& a, const bsuir& b) { return a.GetId() > b.GetId(); });
+
+            std::cout << "\n=== ОТСОРТИРОВАННАЯ КОПИЯ ===\n";
+            for (size_t i = 0; i < elements.size(); i++) {
+                std::cout << i << ": " << elements[i] << std::endl;
             }
             system("pause");
+        }
+        else if (type == "priority_queue") {
+            if (students_priority_queue.getSize() < 2) {
+                std::cout << "В очереди с приоритетом недостаточно элементов для сортировки!\n";
+                system("pause");
+                return;
+            }
+
+            std::cout << "=== СОРТИРОВКА ОЧЕРЕДИ С ПРИОРИТЕТОМ ===\n";
+            std::cout << "По убыванию ID (приоритет не учитывается)\n";
+
+            std::cout << "\n=== ИСХОДНАЯ ОЧЕРЕДЬ С ПРИОРИТЕТОМ ===\n";
+            ShowInf("priority_queue");
+
+            std::vector<bsuir> elements;
+            for (int i = 0; i < students_priority_queue.getSize(); i++) {
+                elements.push_back(students_priority_queue[i]);
+            }
+
+            std::sort(elements.begin(), elements.end(),
+                [](const bsuir& a, const bsuir& b) { return a.GetId() > b.GetId(); });
+
+            std::cout << "\n=== ОТСОРТИРОВАННАЯ КОПИЯ ===\n";
+            for (size_t i = 0; i < elements.size(); i++) {
+                std::cout << i << ": " << elements[i] << std::endl;
+            }
+            system("pause");
+        }
+        else if (type == "stack") {
+            if (students_stack.GetSize() < 2) {
+                std::cout << "В стеке недостаточно элементов для сортировки!\n";
+                system("pause");
+                return;
+            }
+
+            std::cout << "=== СОРТИРОВКА СТЕКА ===\n";
+            std::cout << "По возрастанию ID\n";
+
+            std::cout << "\n=== ИСХОДНЫЙ СТЕК ===\n";
+            ShowInf("stack");
+
+            std::vector<bsuir> elements;
+            for (size_t i = 0; i < students_stack.GetSize(); i++) {
+                elements.push_back(students_stack[i]);
+            }
+
+            std::sort(elements.begin(), elements.end(),
+                [](const bsuir& a, const bsuir& b) { return a.GetId() < b.GetId(); });
+
+            std::cout << "\n=== ОТСОРТИРОВАННАЯ КОПИЯ ===\n";
+            for (size_t i = 0; i < elements.size(); i++) {
+                std::cout << i << ": " << elements[i] << std::endl;
+            }
+            system("pause");
+        }
     }
 
     void SearchInf(std::string type) override {
@@ -1855,21 +2172,17 @@ public:
         }
         system("pause");
     }
-    /*else if (type == "queue") {
-        std::cout << "\n=== ПОИСК В QUEUE ===\n";
+    if (type == "queue") {
+        if (students_queue.empty()) return;
+        std::cout << "\n=== ПОИСК СТУДЕНТОВ ===\n";
 
-        if (students_queue.empty()) {
-            std::cout << "Очередь пуста!\n";
-            return;
-        }
-
-        int id_to_find;
+        unsigned search_id;
         std::cout << "Введите ID студента для поиска: ";
-        number_filteredInput<int>(id_to_find);
+        number_filteredInput<unsigned>(search_id);
 
         bool found = false;
         for (int i = 0; i < students_queue.getSize(); i++) {
-            if (students_queue[i].GetId() == id_to_find) {
+            if (students_queue[i].GetId() == search_id) {
                 std::cout << "Студент найден!\n";
                 std::cout << students_queue[i] << std::endl;
                 found = true;
@@ -1878,11 +2191,57 @@ public:
         }
 
         if (!found) {
-            std::cout << "Студент с ID " << id_to_find << " не найден в очереди!\n";
+            std::cout << "Студент с ID " << search_id << " не найден!\n";
         }
         system("pause");
-    }*/
     }
+    if (type == "priority_queue") {
+        if (students_priority_queue.empty()) return;
+        std::cout << "\n=== ПОИСК СТУДЕНТОВ ===\n";
+
+        unsigned search_id;
+        std::cout << "Введите ID студента для поиска: ";
+        number_filteredInput<unsigned>(search_id);
+
+        bool found = false;
+        for (int i = 0; i < students_priority_queue.getSize(); i++) {
+            if (students_priority_queue[i].GetId() == search_id) {
+                std::cout << "Студент найден!\n";
+                std::cout << students_priority_queue[i] << std::endl;
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            std::cout << "Студент с ID " << search_id << " не найден!\n";
+        }
+        system("pause");
+    }
+    if (type == "stack") {
+        if (students_stack.empty()) return;
+        std::cout << "\n=== ПОИСК СТУДЕНТОВ ===\n";
+
+        unsigned search_id;
+        std::cout << "Введите ID студента для поиска: ";
+        number_filteredInput<unsigned>(search_id);
+
+        bool found = false;
+        for (int i = 0; i < students_stack.GetSize(); i++) {
+            if (students_stack[i].GetId() == search_id) {
+                std::cout << "Студент найден!\n";
+                std::cout << students_stack[i] << std::endl;
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            std::cout << "Студент с ID " << search_id << " не найден!\n";
+        }
+        system("pause");
+    }
+}
 
     void FilterInf(std::string type) override {
         if (type == "array") {
@@ -2113,38 +2472,6 @@ public:
                 }
             }
         }
-       /* else if (type == "queue") {
-            std::cout << "\n=== ФИЛЬТРАЦИЯ QUEUE (по ФИО) ===\n";
-
-            if (students_queue.empty()) {
-                std::cout << "Очередь пуста!\n";
-                system("pause");
-                return;
-            }
-
-            std::string filter_value;
-            std::cout << "Введите ФИО или часть ФИО для поиска: ";
-            std::getline(std::cin, filter_value);
-
-            Queue<bsuir> filtered_queue;
-
-            for (int i = 0; i < students_queue.getSize(); i++) {
-                if (students_queue[i].GetFullname().find(filter_value) != std::string::npos) {
-                    filtered_queue.enqueue(students_queue[i]);
-                }
-            }
-
-            if (filtered_queue.empty()) {
-                std::cout << "\nСтуденты с ФИО содержащим '" << filter_value << "' не найдены!\n";
-            }
-            else {
-                std::cout << "\n=== РЕЗУЛЬТАТЫ ФИЛЬТРАЦИИ (" << filtered_queue.getSize() << " студентов) ===\n";
-                filtered_queue.print();
-            }
-
-            system("pause");
-            }*/
-
         else if (type == "unordered_map") {
             std::cout << "\n=== ФИЛЬТРАЦИЯ UNORDERED_MAP ===\n";
 
@@ -2220,10 +2547,71 @@ public:
                 }
             }
         }
+        else if (type == "queue") {
+            if (students_queue.empty()) return;
+            std::cout << "\n=== ФИЛЬТРАЦИЯ СТУДЕНТОВ ===\n";
 
+            int min_key, max_key;
+            std::cout << "Введите минимальный id: ";
+            number_filteredInput<int>(min_key);
+            std::cout << "Введите максимальный id: ";
+            number_filteredInput<int>(max_key);
+
+            auto filtered = students_queue.filterByIdRange(min_key, max_key);
+            if (filtered.empty()) {
+                std::cout << "Элементы с ключами в диапазоне [" << min_key << ", " << max_key << "] не найдены!\n";
+            }
+            else {
+                std::cout << "Элементы с ключами в диапазоне [" << min_key << ", " << max_key << "]:\n";
+                for (size_t i = 0; i < filtered.getSize(); i++) {
+                    std::cout << filtered[i] << std::endl;
+                }
+            }
+        }
+        else if (type == "priority_queue") {
+            if (students_priority_queue.empty()) return;
+            std::cout << "\n=== ФИЛЬТРАЦИЯ СТУДЕНТОВ ===\n";
+
+            int min_key, max_key;
+            std::cout << "Введите минимальный id: ";
+            number_filteredInput<int>(min_key);
+            std::cout << "Введите максимальный id: ";
+            number_filteredInput<int>(max_key);
+
+            auto filtered = students_priority_queue.filterByIdRange(min_key, max_key);
+            if (filtered.empty()) {
+                std::cout << "Элементы с ключами в диапазоне [" << min_key << ", " << max_key << "] не найдены!\n";
+            }
+            else {
+                std::cout << "Элементы с ключами в диапазоне [" << min_key << ", " << max_key << "]:\n";
+                for (size_t i = 0; i < filtered.getSize(); i++) {
+                    std::cout << filtered[i] << std::endl;
+                }
+            }
+            }
+        else if (type == "stack") {
+            if (students_stack.empty()) return;
+            std::cout << "\n=== ФИЛЬТРАЦИЯ СТУДЕНТОВ ===\n";
+
+            int min_key, max_key;
+            std::cout << "Введите минимальный id: ";
+            number_filteredInput<int>(min_key);
+            std::cout << "Введите максимальный id: ";
+            number_filteredInput<int>(max_key);
+
+            auto filtered = students_stack.filterByIdRange(min_key, max_key);
+            if (filtered.empty()) {
+                std::cout << "Элементы с ключами в диапазоне [" << min_key << ", " << max_key << "] не найдены!\n";
+            }
+            else {
+                std::cout << "Элементы с ключами в диапазоне [" << min_key << ", " << max_key << "]:\n";
+                for (size_t i = 0; i < filtered.GetSize(); i++) {
+                    std::cout << filtered[i] << std::endl;
+                }
+            }
+        }
         std::cout << std::endl;
         system("pause");
-
     }
 };
 int bsuir::count = 0;
@@ -2240,3 +2628,5 @@ BinaryTreeMap<int, std::string> bsuir::students_multimap;
 unordered_map<int, bsuir> bsuir::students_unordered_map;
 //lab5
 Queue<bsuir> bsuir::students_queue;
+Queue<bsuir> bsuir::students_priority_queue{true};
+Stack<bsuir> bsuir::students_stack;

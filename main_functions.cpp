@@ -1015,7 +1015,7 @@ static void showLab4Secondary_UNORDERED_MAP_Menu() {
 ////////////////////////////5_LAB//////////////////////////////////////////////
 
 enum Lab5Menu { LAB5_QUEUE, LAB5_STACK, LAB5_PRIORITY_QUEUE, LAB5_BACK, LAB5_EXIT };
-enum LAB5_CASE_MENU { LAB5_ADD_INFO, LAB5_DELETE_INFO, LAB5_CHANGE_INFO, LAB5_FIND_INFO, LAB5_SORT_INFO, LAB5_FILTER_INFO, LAB5_ADD_TO_FILE, LAB5_SHOW_FROM_FILE, LAB5_CONTAINER_BACK, LAB5_CONTAINER_EXIT };
+enum LAB5_CASE_MENU { LAB5_ADD_INFO, LAB5_DELETE_INFO, LAB5_CHANGE_INFO, LAB5_FIND_INFO, LAB5_SORT_INFO, LAB5_FILTER_INFO, LAB5_ADD_TO_FILE, LAB5_CONTAINER_BACK, LAB5_CONTAINER_EXIT };
 
 void showLab5Secondary_QUEUE_Menu();
 void showLab5Secondary_STACK_Menu();
@@ -1058,7 +1058,7 @@ static void showLab5Menu() {
 }
 
 static void showLab5Secondary_QUEUE_Menu() {
-    const std::string lab5Secondary_QUEUE_Menu[]{ "Добавить", "Удалить", "Редактировать", "Поиск", "Сортировка", "Фильтрация", "Добавить в файл", "Вывести из файла", "Назад", "Выйти" };
+    const std::string lab5Secondary_QUEUE_Menu[]{ "Добавить", "Удалить", "Редактировать", "Поиск", "Сортировка", "Фильтрация", "Добавить в файл", "Назад", "Выйти" };
     const int lab5Secondary_QUEUE_Count = sizeof(lab5Secondary_QUEUE_Menu) / sizeof(lab5Secondary_QUEUE_Menu[0]);
 
     bsuir st;
@@ -1090,7 +1090,7 @@ static void showLab5Secondary_QUEUE_Menu() {
         }
         case LAB5_SORT_INFO: {
 
-            st.ShowInf("queue");
+            st.SortInf("queue");
             break;
         }
         case LAB5_FILTER_INFO: {
@@ -1098,11 +1098,7 @@ static void showLab5Secondary_QUEUE_Menu() {
             break;
         }
         case LAB5_ADD_TO_FILE: {
-            
-            break;
-        }
-        case LAB5_SHOW_FROM_FILE: {
-            
+            st.addFileInfo("queue");
             break;
         }
         case LAB5_CONTAINER_BACK: {
@@ -1120,7 +1116,7 @@ static void showLab5Secondary_QUEUE_Menu() {
     }
 }
 static void showLab5Secondary_STACK_Menu() {
-    const std::string lab5Secondary_STACK_Menu[]{ "Добавить", "Удалить", "Редактировать", "Поиск", "Сортировка", "Фильтрация", "Добавить в файл", "Вывести из файла", "Назад", "Выйти" };
+    const std::string lab5Secondary_STACK_Menu[]{ "Добавить", "Удалить", "Редактировать", "Поиск", "Сортировка", "Фильтрация", "Добавить в файл", "Назад", "Выйти" };
     const int lab5Secondary_STACK_Count = sizeof(lab5Secondary_STACK_Menu) / sizeof(lab5Secondary_STACK_Menu[0]);
 
     bsuir st;
@@ -1152,7 +1148,7 @@ static void showLab5Secondary_STACK_Menu() {
         }
         case LAB5_SORT_INFO: {
 
-            st.ShowInf("stack");
+            st.SortInf("stack");
             break;
         }
         case LAB5_FILTER_INFO: {
@@ -1160,11 +1156,7 @@ static void showLab5Secondary_STACK_Menu() {
             break;
         }
         case LAB5_ADD_TO_FILE: {
-
-            break;
-        }
-        case LAB5_SHOW_FROM_FILE: {
-
+            st.addFileInfo("stack");
             break;
         }
         case LAB5_CONTAINER_BACK: {
@@ -1182,7 +1174,7 @@ static void showLab5Secondary_STACK_Menu() {
     }
 }
 static void showLab5Secondary_PRIORITY_QUEUE_Menu() {
-    const std::string lab5Secondary_PRIORITY_QUEUE_Menu[]{ "Добавить", "Удалить", "Редактировать", "Поиск", "Сортировка", "Фильтрация", "Добавить в файл", "Вывести из файла", "Назад", "Выйти" };
+    const std::string lab5Secondary_PRIORITY_QUEUE_Menu[]{ "Добавить", "Удалить", "Редактировать", "Поиск", "Сортировка", "Фильтрация", "Добавить в файл", "Назад", "Выйти" };
     const int lab5Secondary_PRIORITY_QUEUE_Count = sizeof(lab5Secondary_PRIORITY_QUEUE_Menu) / sizeof(lab5Secondary_PRIORITY_QUEUE_Menu[0]);
 
     bsuir st;
@@ -1204,7 +1196,8 @@ static void showLab5Secondary_PRIORITY_QUEUE_Menu() {
         }
         case LAB5_CHANGE_INFO: {
 
-            st.ChangeInf("priority_queue");
+            std::cout << "В контейнере priority_queue нельзя менять значения!\n";
+            system("pause");
             break;
         }
         case LAB5_FIND_INFO: {
@@ -1214,7 +1207,7 @@ static void showLab5Secondary_PRIORITY_QUEUE_Menu() {
         }
         case LAB5_SORT_INFO: {
 
-            st.ShowInf("priority_queue");
+            st.SortInf("priority_queue");
             break;
         }
         case LAB5_FILTER_INFO: {
@@ -1222,11 +1215,7 @@ static void showLab5Secondary_PRIORITY_QUEUE_Menu() {
             break;
         }
         case LAB5_ADD_TO_FILE: {
-
-            break;
-        }
-        case LAB5_SHOW_FROM_FILE: {
-
+            st.addFileInfo("priority_queue");
             break;
         }
         case LAB5_CONTAINER_BACK: {
@@ -1234,6 +1223,39 @@ static void showLab5Secondary_PRIORITY_QUEUE_Menu() {
             break;
         }
         case LAB5_CONTAINER_EXIT: {
+            std::cout << "Выходим из программы";
+            loadingImitation();
+            exit(0);
+        }
+        default:
+            break;
+        }
+    }
+}
+
+////////////////////////////6_LAB//////////////////////////////////////////////
+
+enum Lab6Menu { LAB6_xxx, LAB6_BACK, LAB6_EXIT };
+enum LAB6_CASE_MENU { LAB6_ADD_INFO, LAB6_DELETE_INFO, LAB6_CHANGE_INFO, LAB6_SHOW_INFO, LAB6_ADD_TO_FILE, LAB6_CONTAINER_BACK, LAB6_CONTAINER_EXIT };
+
+static void showLab6Menu() {
+    const std::string lab6_Menu[]{ "xxx", "Назад", "Выйти" };
+    const int lab6_Count = sizeof(lab6_Menu) / sizeof(lab6_Menu[0]);
+
+    bool inLab6Menu = true;
+    while (inLab6Menu) {
+        int lab1_choice = main_showMenu("6 - Паттерны проектирования", lab6_Menu, lab6_Count);
+
+        switch (lab1_choice) {
+        case LAB6_xxx: {
+            showLab5Secondary_QUEUE_Menu();
+            break;
+        }
+        case LAB6_BACK: {
+            inLab6Menu = false;
+            break;
+        }
+        case LAB6_EXIT: {
             std::cout << "Выходим из программы";
             loadingImitation();
             exit(0);
