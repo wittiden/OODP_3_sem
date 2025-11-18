@@ -1235,11 +1235,12 @@ static void showLab5Secondary_PRIORITY_QUEUE_Menu() {
 
 ////////////////////////////6_LAB//////////////////////////////////////////////
 
-enum Lab6Menu { LAB6_xxx, LAB6_BACK, LAB6_EXIT };
-enum LAB6_CASE_MENU { LAB6_ADD_INFO, LAB6_DELETE_INFO, LAB6_CHANGE_INFO, LAB6_SHOW_INFO, LAB6_ADD_TO_FILE, LAB6_CONTAINER_BACK, LAB6_CONTAINER_EXIT };
-
+enum Lab6Menu { LAB6_ADD, LAB6_DELETE, LAB6_CHANGE, LAB6_SHOW, LAB6_ADD_TO_FILE, LAB6_BACK, LAB6_EXIT };
 static void showLab6Menu() {
-    const std::string lab6_Menu[]{ "xxx", "Назад", "Выйти" };
+
+    StudentManager stm;
+
+    const std::string lab6_Menu[]{ "Добавить", "Удалить", "Редактировать", "Показать всех студентов", "Записать в файл",  "Назад", "Выйти" };
     const int lab6_Count = sizeof(lab6_Menu) / sizeof(lab6_Menu[0]);
 
     bool inLab6Menu = true;
@@ -1247,8 +1248,212 @@ static void showLab6Menu() {
         int lab1_choice = main_showMenu("6 - Паттерны проектирования", lab6_Menu, lab6_Count);
 
         switch (lab1_choice) {
-        case LAB6_xxx: {
-            showLab5Secondary_QUEUE_Menu();
+        case LAB6_ADD: {
+            unsigned studentChoice;
+            unsigned finalStudentChoice;
+            bool add_flag = false;
+
+            std::string name;
+            int age;
+            std::string university;
+            std::string course;
+            std::string researchTopic;
+            std::string dissertationTopic;
+            std::string workplace;
+            std::string country;
+
+            do {
+                std::cout << "\n=== ДОБАВЛЕНИЕ СТУДЕНТА ===\n";
+                std::cout << "\nФамилия: ";
+                letter_filteredInput<std::string>(name, 0, 1);
+                std::cout << "Возраст: ";
+                do {
+                    number_filteredInput<int>(age);
+                    if (age < 17 || age > 80) {
+                        std::cout << "Неверный выбор, попробуйте еще раз\n";
+                    }
+                    else {
+                        break;
+                    }
+                } while (true);
+                std::cout << "Университет: ";
+                letter_filteredInput<std::string>(university, 0, 1);
+
+                std::cout << "1 - Бакалавр\n2 - Магистр\n3 - Аспирант\n4 - Заочник\n5 - Иностранный студент\n";
+                std::cout << "Введите действие: ";
+                number_filteredInput<unsigned>(studentChoice);
+
+                switch (studentChoice) {
+                case 1:
+                    std::cout << "Курс: ";
+                    std::cin >> course;
+                    stm.addStudentWithConstructor("БАКАЛАВР", name, age, university, course);
+                    break;
+                case 2:
+                    std::cout << "Тема исследования: ";
+                    letter_filteredInput<std::string>(researchTopic, 0, 1);
+                    stm.addStudentWithConstructor("МАГИСТР", name, age, university, researchTopic);
+                    break;
+                case 3:
+                    std::cout << "Тема диссертации: ";
+                    letter_filteredInput<std::string>(dissertationTopic, 0, 1);
+                    stm.addStudentWithConstructor("АСПИРАНТ", name, age, university, dissertationTopic);
+                    break;
+                case 4:
+                    std::cout << "Место работы: ";
+                    letter_filteredInput<std::string>(workplace, 0, 1);
+                    stm.addStudentWithConstructor("ЗАОЧНИК", name, age, university, workplace);
+                    break;
+                case 5:
+                    std::cout << "Страна: ";
+                    letter_filteredInput<std::string>(country, 0, 1);
+                    stm.addStudentWithConstructor("ИНОСТРАННЫЙ", name, age, university, country);
+                    break;
+                default:
+                    std::cout << "Неверный выбор, попробуйте еще раз\n";
+                    continue;
+                }
+
+                bool inner_flag = false;
+                do {
+                    std::cout << "\n1 - Показать список\n2 - Продолжить создание\n3 - Выйти\n";
+                    std::cout << "Выберите действие: ";
+                    number_filteredInput<unsigned>(finalStudentChoice);
+
+                    switch (finalStudentChoice) {
+                    case 1:
+                        std::cout << "\n=== СПИСОК СТУДЕНТОВ ===\n";
+                        stm.showAllStudents();
+                        break;
+                    case 2:
+                        inner_flag = true;
+                        break;
+                    case 3:
+                        inner_flag = true;
+                        add_flag = true;
+                        break;
+                    default:
+                        std::cout << "Неверный выбор, попробуйте еще раз\n";
+                        break;
+                    }
+                } while (!inner_flag);
+
+            } while (!add_flag);
+
+            break;
+        }
+        case LAB6_DELETE: {
+
+            unsigned finalStudentChoice;
+            bool add_flag = false;
+            int id;
+
+            if (stm.isEmpty()) {
+                std::cout << "Список студентов пуст!\n";
+                system("pause");
+                break;
+            }
+
+            do {
+                stm.showAllStudents();
+
+                std::cout << "\n=== УДАЛЕНИЕ СТУДЕНТА ===\n";
+                std::cout << "Введите id студента для удаления: ";
+                number_filteredInput<int>(id);
+                stm.removeStudentById(id);
+
+                bool inner_flag = false;
+                do {
+                    std::cout << "\n1 - Показать список\n2 - Удалить 1 элемент\n3 - Выйти\n";
+                    std::cout << "Выберите действие: ";
+                    number_filteredInput<unsigned>(finalStudentChoice);
+
+                    switch (finalStudentChoice) {
+                    case 1:
+                        stm.showAllStudents();
+                        break;
+                    case 2:
+                        if (stm.isEmpty()) {
+                            std::cout << "\nСписок студентов пуст!\n";
+                            system("pause");
+                            inner_flag = true;
+                            add_flag = true;
+                        }
+                        inner_flag = true;
+                        break;
+                    case 3:
+                        inner_flag = true;
+                        add_flag = true;
+                        break;
+                    default:
+                        std::cout << "Неверный выбор, попробуйте еще раз\n";
+                        break;
+                    }
+                } while (!inner_flag);
+
+            } while (!add_flag);
+
+            break;
+        }
+        case LAB6_CHANGE: {
+            unsigned finalStudentChoice;
+            bool change_flag = false;
+            int id;
+
+            if (stm.isEmpty()) {
+                std::cout << "Список студентов пуст!\n";
+                system("pause");
+                break;
+            }
+
+            do {
+                std::cout << "\n=== РЕДАКТИРОВАНИЕ СТУДЕНТОВ ===\n";
+                stm.showAllStudents();
+
+                std::cout << "Введите ID студента для редактирования: ";
+                number_filteredInput<int>(id);
+
+                if (stm.studentExists(id)) {
+                    stm.changeStudentData(id);
+                }
+                else {
+                    std::cout << "Студент с ID " << id << " не найден\n";
+                }
+
+                bool inner_flag = false;
+                do {
+                    std::cout << "\n1 - Показать список\n2 - Редактировать другого студента\n3 - Выйти\n";
+                    std::cout << "Выберите действие: ";
+                    number_filteredInput<unsigned>(finalStudentChoice);
+
+                    switch (finalStudentChoice) {
+                    case 1:
+                        stm.showAllStudents();
+                        break;
+                    case 2:
+                        inner_flag = true;
+                        break;
+                    case 3:
+                        inner_flag = true;
+                        change_flag = true;
+                        break;
+                    default:
+                        std::cout << "Неверный выбор, попробуйте еще раз\n";
+                        break;
+                    }
+                } while (!inner_flag);
+
+            } while (!change_flag);
+
+            break;
+        }
+        case LAB6_SHOW: {
+            stm.showAllStudents();
+            system("pause");
+            break;
+        }
+        case LAB6_ADD_TO_FILE: {
+            stm.addFileInfo();
             break;
         }
         case LAB6_BACK: {

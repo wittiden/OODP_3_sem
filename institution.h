@@ -13,6 +13,7 @@
 #include "lab3_array_vector_list.h"
 #include "lab4_map_set_hashtable.h"
 #include "lab5_queue_stack_priorityqueue.h"
+#include "lab6_patterns.h"
 
 class bsuir;
 class institution {
